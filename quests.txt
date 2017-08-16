@@ -1,17 +1,71 @@
 Quests
 
+Demacia
+Garen
+Lux
+Galio
+J4
+Nautilus
+Poppy
+Sona
+Xin Zhao
+
+Zaun
+Warwick
+Viktor
+Blitz
+Mundo
+Twitch
+Urgot
+
+Piltover
+Caitlyn
+Vi
+Corki
+Ezreal
+Heimer
+Janna
+Jayce
+Orianna
+
+Noxus
+Darius
+Cass
+Katarina
+Morde
+Riven
+Singed
+Sion
+
+Freljord
+Ashe
+Sejuani
+Lissandra
+Anivia
+Braum
+
+
+Bandle City
+Bilgewater
+Shadow Isles
+Targon
+Shurima
+Icathia
+The Void
+
+
 Economy
 Stockpile: Earn X Gold - greater than
 Monster Hunter: Kill X Neutrals - greater than
-Booty Grabber: Get X GPM - greater than
+Booty Bandit: Get X GPM - greater than
 Highway Robbery: Get X CS - greater than
-Bounty-full: Get more than X kills
+Headhunter: Get more than X kills
 Hoarder: Win the game with X gold unspent
 
 Objectives
 First!: Get First Blood/First Tower/First Inhib - bool
-Smash!: Damage to Objectives - greater than
-Cannoneer: Last Hit X Turrets - greater than
+Hellrazer: Damage to Objectives - greater than
+Demolition Man: Last Hit X Turrets - greater than
 Dragon Slayer: Kill X Dragons - team greater than
 Hella Buff: Get First Herald/Dragon/Baron - team bool
 Nothing But Rubble: Kill all 11 enemy towers before winning

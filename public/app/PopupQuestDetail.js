@@ -3,12 +3,12 @@ import { Card, Icon, Image } from 'semantic-ui-react'
 
 
 const PopupQuestDetail = (props) => {
-  let { showPopup, quest = {style: {top: 0, left: 0}} } = props;
+  let { showPopup, quest, handleDescription, questLineIndex } = props;
 
   const style = {
     position: 'absolute',
-    top: quest.style.top + 190 + 200 < window.innerHeight ? quest.style.top : quest.style.top - 220,
-    left: quest.style.left + 190 + 200 < window.innerWidth ? quest.style.left + 90 : quest.style.left - 220,
+    top: quest.style.top + 400 + questLineIndex * 583 - window.scrollY < window.innerHeight * 3/4 ? quest.style.top : quest.style.top - 220,
+    left: quest.style.left + 390 < window.innerWidth ? quest.style.left + 90 : quest.style.left - 220,
     height: 300,
     width: 200,
     display: showPopup ? 'block' : 'none',
@@ -22,7 +22,7 @@ const PopupQuestDetail = (props) => {
         <Image src={quest.backgroundImg} />
         <Card.Content>
         <Card.Header style={{color: 'white', padding: '10px 0 15px', borderBottom: '1px solid #aaa'}}>{quest.name}</Card.Header>
-        <Card.Description style={{color: 'white', margin: '10px 0 5px'}}>{quest.description}</Card.Description>
+        <Card.Description style={{color: 'white', margin: '10px 0 5px'}}>{handleDescription(quest)}</Card.Description>
         </Card.Content>
         <Card.Content style={{margin: '15px 0 0 0', padding: 0}}>
         <span style={{textAlign: 'center', padding: '30px 25px 5px', width: '100%', margin: 0, background: 'linear-gradient(to right, rgba(5,136,162,1) 0%, rgba(0,71,97,1) 100%)'}}>

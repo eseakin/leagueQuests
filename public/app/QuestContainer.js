@@ -15,7 +15,6 @@ class QuestContainer extends Component {
   }
 
   handleClick = (questLineIndex, i) => {
-    console.log('click', i)
     this.setState({activeQuest: questList[questLineIndex].quests[i]})
   }
 
@@ -28,13 +27,58 @@ class QuestContainer extends Component {
 
   }
 
+  handleDescription = (quest) => {
+    const description = quest.description.split('$');
+    const requirements = quest.requirements;
+
+    let ri = 0;
+    let vi = 0;
+
+    const style = {
+      complete: {
+        color: '#ccc'
+      },
+      incomplete: {
+        color: '#00eaff'
+      }
+    }
+
+    return description.map((ele, i) => {
+      if(i === 0) {
+        return (<span key={i}>{description[i]}</span>)
+      } else {
+        const value = requirements[ri].displayValues[vi];
+        const numberStyle = quest.completion > vi ? style.complete : style.incomplete;
+
+        if(vi >= requirements[ri].displayValues.length - 1) {
+          ri++;
+          vi = 0;
+        } else {
+          vi++;
+        }
+
+        return (
+          <span key={i}>
+            <span style={numberStyle}>
+              {value}
+            </span>
+            <span>
+              {description[i]}
+            </span>
+          </span>
+        )
+      }
+    })
+    
+  }
+
   render() {
     const { activeQuest } = this.state;
 
     return (
-      <Container className='questCardContainer'>
-        <CurrentQuestCard activeQuest={activeQuest} beginQuest={this.beginQuest} completeQuest={this.completeQuest} />
-
+      <div>
+        <CurrentQuestCard activeQuest={activeQuest} beginQuest={this.beginQuest} completeQuest={this.completeQuest} handleDescription={this.handleDescription} />
+        
         {Object.keys(questList).map((key, i) => 
           <QuestCard 
             key={key}
@@ -45,9 +89,10 @@ class QuestContainer extends Component {
             cardTitle={questList[key].cardTitle}
             cardColor={questList[key].cardColor}
             cardBackground={questList[key].cardBackground} 
+            handleDescription={this.handleDescription}
           />)}
         
-      </Container>
+      </div>
     )
   }
 }

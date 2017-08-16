@@ -27,11 +27,16 @@ class QuestCard extends Component {
 
   render() {
     const { showPopup, popupQuest } = this.state;
-    const { questList, activeQuest, handleClick, cardTitle, cardBackground, cardColor, questLineIndex } = this.props;
+    const { questList, activeQuest, handleClick, cardTitle, cardBackground, cardColor, questLineIndex, handleDescription } = this.props;
 
     const style = {
       container: {
         marginBottom: 20
+      },
+      card: {
+        width: 900, 
+        background: cardColor, 
+        boxShadow: '0 1px 3px 0 #111, 0 0 0 1px #111'
       },
       header: {
         position: 'absolute',
@@ -39,16 +44,19 @@ class QuestCard extends Component {
         right: 30,
         color: 'white',
         fontSize: '2em'
+      },
+      image: {
+        opacity: .5
       }
     }
 
     return (
       <Container style={style.container}>
-        <Card centered style={{width: 900, background: cardColor, boxShadow: '0 1px 3px 0 #111, 0 0 0 1px #111'}}>
-          <Card.Content style={{margin: 0}}>
-          <Image src={cardBackground} style={{opacity: .5}}/>
+        <Card centered style={style.card}>
+          <Card.Content>
+          <Image src={cardBackground} style={style.image}/>
           <Card.Header content={cardTitle} style={style.header} />
-          <PopupQuestDetail top='24px' left='240px' showPopup={showPopup} quest={popupQuest} />
+          <PopupQuestDetail showPopup={showPopup} quest={popupQuest || questList[0]} handleDescription={handleDescription} questLineIndex={questLineIndex} />
 
           {questList.map((quest, i) => 
             <QuestIcon 
@@ -56,7 +64,6 @@ class QuestCard extends Component {
             onMouseEnter={this.onMouseEnter} 
             onMouseLeave={this.onMouseLeave} 
             handleClick={handleClick} 
-            id={`quest${i}`} 
             quest={quest} 
             activeQuest={activeQuest}
             i={i} 

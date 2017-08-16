@@ -7,21 +7,53 @@ class CurrentQuestCard extends Component {
     super(props);
   
     this.state = {
+      scrollY: 0
     };
   }
 
+  componentDidMount = () => {
+    window.addEventListener('scroll', this.handleScroll);
+  }
+
+  componentWillUnmount = () => {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  handleScroll = () => {
+      this.setState({
+        scrollY: window.scrollY
+      });
+  }
+
+
   render() {
-    // const {  } = this.state;
-    const { activeQuest, beginQuest, completeQuest } = this.props;
+    const { scrollY } = this.state;
+    const { activeQuest, beginQuest, completeQuest, handleDescription } = this.props;
 
     const style = {
+      div: {
+        background: 'transparent',
+        width: window.innerWidth,
+        margin: '20px 0',
+        position: 'relative',
+        textAlign: 'center',
+      },
+      divScroll: {
+        background: 'rgba(25,25,25,.8)',
+        position: 'fixed',
+        width: window.innerWidth,
+        padding: '10px 50px 10px 50px',
+        marginTop: '-110px',
+        zIndex: 3,
+        textAlign: 'center',
+        borderBottom: '2px solid #474747'
+      },
       container: {
-        margin: 20,
-        color: '#00eaff'
-        
+        color: '#00eaff', 
+        margin: 'auto',
       },
       card: {
-        height: 150, 
+        height: 160, 
         width: 900,
         background: '#1f1f3d', 
         boxShadow: '0 1px 3px 0 #111, 0 0 0 1px #111',
@@ -48,19 +80,13 @@ class CurrentQuestCard extends Component {
       },
       cardHeader: {
         color: 'white',
-        width: '100%'
-        // position: 'absolute',
-        // top: 10,
-        // left: 0,
-        // zIndex: 3
+        width: '100%',
+        fontSize: 22
       },
       cardDescription: {
         color: 'white',
-        width: '100%'
-        // position: 'absolute',
-        // top: 10,
-        // left: 0,
-        // zIndex: 3
+        width: '100%',
+        fontSize: 18
       },
       buttonBegin: {
         position: 'absolute',
@@ -75,33 +101,37 @@ class CurrentQuestCard extends Component {
         right: 30,
         zIndex: 3,
         width: 180
-      },
-    }
+      }
+
+    };
 
     return (
-      <Container className='currentQuestCard' style={style.container}>
-        <Card centered style={style.card}>
-          <Image style={style.image} src={activeQuest.backgroundImg} />
-          <Card.Content style={style.content}>
-            <h1>
-              Current Quest
-              <span style={style.iconSpan}>
-                <Icon className='star' name='star' color={activeQuest.completion > 0 ? 'yellow' : 'grey'} />
-                <Icon className='star' name='star' color={activeQuest.completion > 1 ? 'yellow' : 'grey'} />
-                <Icon className='star' name='star' color={activeQuest.completion > 2 ? 'yellow' : 'grey'} />
-              </span>
-            </h1>
-            
-            <Card.Header content={activeQuest.name} style={style.cardHeader} />
-            <Card.Description content={activeQuest.description} style={style.cardDescription} />
-          
-          </Card.Content>   
-          <Button onClick={beginQuest} content='Begin Quest' icon='play' style={style.buttonBegin} color='red' />
-          <Button onClick={completeQuest} content='Complete Quest' icon='winner' style={style.buttonComplete} color='yellow' />       
+      <div style={scrollY < 100 ? style.div : style.divScroll}>
+        <Container style={style.container}>
+          <Card centered style={style.card}>
+            <Image style={style.image} src={activeQuest.backgroundImg} />
+            <Card.Content style={style.content}>
+              <h1>
+                Current Quest
+                <span style={style.iconSpan}>
+                  <Icon className='star' name='star' color={activeQuest.completion > 0 ? 'yellow' : 'grey'} />
+                  <Icon className='star' name='star' color={activeQuest.completion > 1 ? 'yellow' : 'grey'} />
+                  <Icon className='star' name='star' color={activeQuest.completion > 2 ? 'yellow' : 'grey'} />
+                </span>
+              </h1>
+              
+              <Card.Header content={activeQuest.name} style={style.cardHeader} />
+              <Card.Description style={style.cardDescription} content={handleDescription(activeQuest)}>
 
-          
-        </Card>
-      </Container>
+              </Card.Description>
+            
+            </Card.Content>   
+            <Button onClick={beginQuest} content='Begin Quest' icon='play' style={style.buttonBegin} color='red' />
+            <Button onClick={completeQuest} content='Complete Quest' icon='winner' style={style.buttonComplete} color='yellow' />       
+
+          </Card>
+        </Container>
+      </div>
     )
   }
 }
