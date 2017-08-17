@@ -15,6 +15,9 @@ class App extends Component {
       resizeUpdate: false,
       activeView: 'quests',
       backgroundUrl: 'http://cdn.leagueoflegends.com/lolkit/1.1.6/resources/images/bg-default.jpg',
+      summonerName: 'escape goat',
+      accountId: '43757987',
+      region: 'NA1'
     };
   }
 
@@ -79,7 +82,10 @@ class App extends Component {
       windowHeight,
       champData, 
       activeView, 
-      backgroundUrl
+      backgroundUrl,
+      summonerName,
+      accountId,
+      region
        } = this.state;
 
     const version = '7.16.1'   
@@ -98,7 +104,7 @@ class App extends Component {
           <img src="../leagueQuests.png" alt="Welcome to League Skins"/>
         </div>
 
-        <QuestContainer />
+        <QuestContainer summonerName={summonerName} accountId={accountId} region={region} />
 
         <div className='background'>
           <img className='champDetailBackground' src={backgroundUrl} />

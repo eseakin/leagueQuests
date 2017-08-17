@@ -2,29 +2,68 @@ import React, { Component } from 'react';
 import { Container } from 'semantic-ui-react';
 import QuestCard from './QuestCard';
 import CurrentQuestCard from './CurrentQuestCard';
-import { questList } from '../stubs/quests';
-
+// import { questList } from '../stubs/quests';
+import axios from 'axios';
 
 class QuestContainer extends Component {
   constructor(props) {
     super(props);
   
     this.state = {
-      activeQuest: questList[0].quests[0]
+      questList: null,
+      activeQuest: null,
+      questCards: null
     };
   }
 
-  handleClick = (questLineIndex, i) => {
-    this.setState({activeQuest: questList[questLineIndex].quests[i]})
+  componentWillMount = () => {
+    this.getQuests();
+  }
+
+  handleClick = (i) => {
+    this.setState({activeQuest: this.state.questList[i]})
+  }
+
+  getQuests = () => {
+    axios.get('/quests')
+      .then((response) => {
+        const { quests, questCards } = response.data;
+        console.log('quests', quests, questCards);
+        this.setState({activeQuest: quests[0], questList: quests, questCards: questCards});
+      })
+      .catch((error) => console.log(error))
   }
 
   beginQuest = () => {
-    console.log('begin')
+    const { summonerName, region } = this.props;
+    const questId = this.state.activeQuest.id;
+    console.log('begin', summonerName, questId, new Date().getTime())
+    axios.get(`/beginQuest/${region}/${summonerName}/${questId}`)
+    .then((response) => {
+      console.log(response.data)
+    })
+    .catch((error) => console.log(error))
   }
 
   completeQuest = () => {
     console.log('complete')
+    axios.get('/completeQuest/' + this.props.region + '/' + this.props.summonerName)
+    .then((res) => {
+      if(res.data) {
+        const questListUpdate = this.state.questList.map((quest) => {
+          if(quest.id == res.data.questId)
+            return Object.assign({}, quest, {completion: res.data.completion, champ: res.data.champ, time: res.data.time});
+          else
+            return quest;
+        });
+        console.log('completeQuest', questListUpdate)
 
+        this.setState({questList: questListUpdate})
+      } else {
+        console.log('failed quest')
+      }
+      })
+    .catch((err) => console.log(err));
   }
 
   handleDescription = (quest) => {
@@ -73,22 +112,22 @@ class QuestContainer extends Component {
   }
 
   render() {
-    const { activeQuest } = this.state;
+    const { activeQuest, questList, questCards } = this.state;
 
     return (
       <div>
-        <CurrentQuestCard activeQuest={activeQuest} beginQuest={this.beginQuest} completeQuest={this.completeQuest} handleDescription={this.handleDescription} />
-        
-        {Object.keys(questList).map((key, i) => 
+        {questList && <CurrentQuestCard activeQuest={activeQuest} beginQuest={this.beginQuest} completeQuest={this.completeQuest} handleDescription={this.handleDescription} />}
+
+        {questCards && questCards.map((questCard, i) => 
           <QuestCard 
-            key={key}
-            questLineIndex={i}
-            questList={questList[key].quests} 
+            key={i}
+            questList={questList} 
             activeQuest={activeQuest} 
             handleClick={this.handleClick} 
-            cardTitle={questList[key].cardTitle}
-            cardColor={questList[key].cardColor}
-            cardBackground={questList[key].cardBackground} 
+            cardQuests={questCard.quests}
+            cardTitle={questCard.cardTitle}
+            cardColor={questCard.cardColor}
+            cardBackground={questCard.cardBackground} 
             handleDescription={this.handleDescription}
           />)}
         

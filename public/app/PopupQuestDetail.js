@@ -3,7 +3,7 @@ import { Card, Icon, Image } from 'semantic-ui-react'
 
 
 const PopupQuestDetail = (props) => {
-  let { showPopup, quest, handleDescription, questLineIndex } = props;
+  let { showPopup, quest, handleDescription, questLineIndex = 0 } = props;
 
   const style = {
     position: 'absolute',
