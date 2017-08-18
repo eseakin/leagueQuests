@@ -12,12 +12,23 @@ class QuestContainer extends Component {
     this.state = {
       questList: null,
       activeQuest: null,
-      questCards: null
+      questCards: null,
     };
   }
 
   componentWillMount = () => {
     this.getQuests();
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    console.log('questcontainer props', nextProps.userQuests)
+    if(nextProps.userQuests) {
+      const { questList } = this.state
+      const newQuestList = questList.map((quest, i) => {
+        return Object.assign({}, quest, nextProps.userQuests[i]);
+      })
+      this.setState({questList: newQuestList})
+    }
   }
 
   handleClick = (i) => {
@@ -28,16 +39,16 @@ class QuestContainer extends Component {
     axios.get('/quests')
       .then((response) => {
         const { quests, questCards } = response.data;
-        console.log('quests', quests, questCards);
-        this.setState({activeQuest: quests[0], questList: quests, questCards: questCards});
+        // console.log('quests', quests, questCards);
+        this.setState({activeQuest: quests[1], questList: quests, questCards: questCards});
       })
       .catch((error) => console.log(error))
   }
 
   beginQuest = () => {
-    const { summonerName, region } = this.props;
+    const { region, summonerName } = this.props;
     const questId = this.state.activeQuest.id;
-    console.log('begin', summonerName, questId, new Date().getTime())
+    console.log('begin', region, summonerName, questId)
     axios.get(`/beginQuest/${region}/${summonerName}/${questId}`)
     .then((response) => {
       console.log(response.data)
@@ -45,20 +56,24 @@ class QuestContainer extends Component {
     .catch((error) => console.log(error))
   }
 
+  //NEEDS TO UPDATE CURRENT QUEST AND POPUPQUEST RENDERING
   completeQuest = () => {
     console.log('complete')
     axios.get('/completeQuest/' + this.props.region + '/' + this.props.summonerName)
     .then((res) => {
       if(res.data) {
+        let questUpdate;
         const questListUpdate = this.state.questList.map((quest) => {
-          if(quest.id == res.data.questId)
-            return Object.assign({}, quest, {completion: res.data.completion, champ: res.data.champ, time: res.data.time});
-          else
+          if(quest.id == res.data.questId) {
+            questUpdate = Object.assign({}, quest, {completion: res.data.completion, champ: res.data.champ, time: res.data.time});
+            return questUpdate;
+          } else {
             return quest;
+          }
         });
         console.log('completeQuest', questListUpdate)
 
-        this.setState({questList: questListUpdate})
+        this.setState({questList: questListUpdate, activeQuest: questUpdate })
       } else {
         console.log('failed quest')
       }
@@ -66,7 +81,7 @@ class QuestContainer extends Component {
     .catch((err) => console.log(err));
   }
 
-  handleDescription = (quest) => {
+  handleDescription = (quest, completion) => {
     const description = quest.description.split('$');
     const requirements = quest.requirements;
 
@@ -82,12 +97,14 @@ class QuestContainer extends Component {
       }
     }
 
-    return description.map((ele, i) => {
+    return description.map((descriptionText, i) => {
+      
+
       if(i === 0) {
-        return (<span key={i}>{description[i]}</span>)
+        return (<span key={i}>{descriptionText}</span>)
       } else {
         const value = requirements[ri].displayValues[vi];
-        const numberStyle = quest.completion > vi ? style.complete : style.incomplete;
+        const numberStyle = completion > vi ? style.complete : style.incomplete;
 
         if(vi >= requirements[ri].displayValues.length - 1) {
           ri++;
@@ -102,7 +119,7 @@ class QuestContainer extends Component {
               {value}
             </span>
             <span>
-              {description[i]}
+              {descriptionText}
             </span>
           </span>
         )
@@ -111,12 +128,39 @@ class QuestContainer extends Component {
     
   }
 
+  handleCompletion = (questId) => {
+    let completion = 0;
+    if(this.state.questList)
+      completion = this.state.questList[questId].completion || 0;
+
+    return completion;
+  }
+
   render() {
-    const { activeQuest, questList, questCards } = this.state;
+    const { 
+      activeQuest, 
+      questList, 
+      questCards } = this.state;
+
+    const {       
+      summonerName,
+      accountId,
+      region,
+      currentQuestId,
+      profileIcon,
+      questStart,
+      userQuests } = this.props; 
 
     return (
       <div>
-        {questList && <CurrentQuestCard activeQuest={activeQuest} beginQuest={this.beginQuest} completeQuest={this.completeQuest} handleDescription={this.handleDescription} />}
+        {questList && 
+          <CurrentQuestCard 
+          handleCompletion={this.handleCompletion} 
+          activeQuest={activeQuest} 
+          beginQuest={this.beginQuest} 
+          completeQuest={this.completeQuest} 
+          handleDescription={this.handleDescription} 
+        />}
 
         {questCards && questCards.map((questCard, i) => 
           <QuestCard 
@@ -129,6 +173,7 @@ class QuestContainer extends Component {
             cardColor={questCard.cardColor}
             cardBackground={questCard.cardBackground} 
             handleDescription={this.handleDescription}
+            handleCompletion={this.handleCompletion}
           />)}
         
       </div>
@@ -137,3 +182,6 @@ class QuestContainer extends Component {
 }
 
 export default QuestContainer;
+
+
+

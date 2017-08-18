@@ -15,9 +15,6 @@ class App extends Component {
       resizeUpdate: false,
       activeView: 'quests',
       backgroundUrl: 'http://cdn.leagueoflegends.com/lolkit/1.1.6/resources/images/bg-default.jpg',
-      summonerName: 'escape goat',
-      accountId: '43757987',
-      region: 'NA1'
     };
   }
 
@@ -28,6 +25,7 @@ class App extends Component {
       .then((res) => true)
       .catch((error) => console.log(error));
     }
+    this.getSummonerData('NA1', 'escape goat');
   }
 
   componentWillUnmount() {
@@ -47,7 +45,6 @@ class App extends Component {
     //   })
     // .catch((err) => console.log(err));
 
-    // this.getSummonerData();
   }
 
   updateDimensions = () => {
@@ -63,12 +60,13 @@ class App extends Component {
     }
   }
 
-  getSummonerData = (summonerName) => {
+  getSummonerData = (region, summonerName) => {
     // summonerName = 'escape goat'
-    axios.get('/summonerData/' + summonerName)
+    axios.get(`summonerData/${region}/${summonerName}`)
     .then((res) => {
         console.log('summonerData', res.data)
-        this.setState({ summonerData: res.data });
+        const { accountId, summonerName, region, currentQuestId, profileIcon, questStart, userQuests } = res.data
+        this.setState({ accountId, summonerName, region, currentQuestId, profileIcon, questStart, userQuests });
       })
     .catch((err) => console.log(err));
   }
@@ -85,7 +83,11 @@ class App extends Component {
       backgroundUrl,
       summonerName,
       accountId,
-      region
+      region,
+      currentQuestId,
+      profileIcon,
+      questStart,
+      userQuests
        } = this.state;
 
     const version = '7.16.1'   
@@ -104,7 +106,15 @@ class App extends Component {
           <img src="../leagueQuests.png" alt="Welcome to League Skins"/>
         </div>
 
-        <QuestContainer summonerName={summonerName} accountId={accountId} region={region} />
+        <QuestContainer 
+          summonerName={summonerName} 
+          accountId={accountId} 
+          region={region} 
+          currentQuestId={currentQuestId}
+          profileIcon={profileIcon}
+          questStart={questStart}
+          userQuests={userQuests}
+        />
 
         <div className='background'>
           <img className='champDetailBackground' src={backgroundUrl} />

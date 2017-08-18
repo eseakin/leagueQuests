@@ -44,7 +44,6 @@ body {
 .questContainer {
   margin-top: 20px;
   /*border: 1px solid red;*/
-
 }
 
 .btn {
@@ -64,43 +63,6 @@ body {
   background-color: #114691;
 }
 
-.icon {
-  /*border: 1px solid red;*/
-  display: inline-block;
-  width: 100px;
-  height: 100px;
-  position: relative;
-  cursor: pointer;
-  transition: 2s margin-top, 1s opacity;
-}
-
-.icon > img {
-  width: 90px;
-  height: 90px;
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  transition: all .25s;
-  opacity: .8;
-}
-
-.icon > img:hover {
-  opacity: 1;
-  cursor: pointer;
-}
-
-.icon > p {
-  color: white;
-  margin-top: 100px;
-}
-
-.icon:hover {
-  background-image: linear-gradient(to right, #c2b189 30px, transparent 30px), linear-gradient(to right, #c2b189 30px, transparent 30px), linear-gradient(to bottom, #c2b189 30px, transparent 30px), linear-gradient(to bottom, #c2b189 30px, transparent 30px);
-  background-size: 100% 3px, 100% 3px, 3px 100%, 3px 100%;
-  background-position: -13px 0%, -13px 100%, 0% -13px, 100% -13px;
-  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-}
-
 .champDetailBackground {
   z-index: -1;
   transition: 1s all;
@@ -110,11 +72,6 @@ body {
   min-width: 100%;
   min-height: 100%;
 }
-
-.star:hover {
-  border: none !important;
-}
-
 
 @media (max-width: 990px && min-width: 601px) {
 
@@ -150,39 +107,4 @@ body {
     max-height: 100%;
   }
 
-  .icon {
-    width: 60px;
-    height: 60px;
-    position: relative;
-    margin-bottom: 20px;
-  }
-
-  .icon > img {
-    width: 56px;
-    height: 56px;
-    top: 2px;
-    left: 2px;
-    /*border: 1px solid pink;*/
-    position: absolute;
-    opacity: 1;
-  }
-
-  .icon > p {
-    /*border: 1px solid red;*/
-    position: absolute;
-    top: -40px;
-    left: 0px;
-    /*margin-top: 62px;*/
-    /*height: 50px;*/
-    font-size: .7em;
-    width: 100%;
-    text-align: center;
-  }
-
-  .icon:hover {
-    background-image: linear-gradient(to right, #c2b189 10px, transparent 10px), linear-gradient(to right, #c2b189 10px, transparent 10px), linear-gradient(to bottom, #c2b189 10px, transparent 10px), linear-gradient(to bottom, #c2b189 10px, transparent 10px);
-    background-size: 100% 2px, 100% 2px, 2px 100%, 2px 100%;
-    background-position: -5px 0%, -5px 100%, 0% -5px, 100% -5px;
-    background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-  }
 }

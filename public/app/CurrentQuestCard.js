@@ -19,6 +19,20 @@ class CurrentQuestCard extends Component {
     window.removeEventListener('scroll', this.handleScroll);
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    console.log('current quest props', nextProps)
+    this.setState({completion: this.props.handleCompletion(nextProps.activeQuest.id)})
+  }
+
+  // shouldComponentUpdate = (nextProps, nextState) => {
+  //   const completion = this.props.handleCompletion(nextProps.activeQuest.id)
+
+  //   if(completion != this.state.completion || nextProps.activeQuest.id != this.props.activeQuest.id || this.state.scrollY != nextState.scrollY)
+  //     return true;
+  //   else
+  //     return false;
+  // }
+
   handleScroll = () => {
       this.setState({
         scrollY: window.scrollY
@@ -27,8 +41,8 @@ class CurrentQuestCard extends Component {
 
 
   render() {
-    const { scrollY } = this.state;
-    const { activeQuest, beginQuest, completeQuest, handleDescription } = this.props;
+    const { scrollY, completion } = this.state;
+    const { activeQuest, beginQuest, completeQuest, handleDescription, handleCompletion } = this.props;
 
     const style = {
       div: {
@@ -67,7 +81,7 @@ class CurrentQuestCard extends Component {
         zIndex: 1
       },
       iconSpan: {
-        marginLeft: 25
+        // marginLeft: 25
       },
       content: {
         position: 'absolute',
@@ -79,6 +93,7 @@ class CurrentQuestCard extends Component {
         zIndex: 3
       },
       cardHeader: {
+        fontFamily: 'Merriweather',
         color: 'white',
         width: '100%',
         fontSize: 22
@@ -89,20 +104,23 @@ class CurrentQuestCard extends Component {
         fontSize: 18
       },
       buttonBegin: {
+        fontFamily: 'Merriweather',
         position: 'absolute',
         top: 30,
         right: 30,
         zIndex: 3,
-        width: 180
+        width: 180,
+        fontSize: 12
       },
       buttonComplete: {
+        fontFamily: 'Merriweather',
         position: 'absolute',
         top: 80,
         right: 30,
         zIndex: 3,
+        fontSize: 12,
         width: 180
       }
-
     };
 
     return (
@@ -112,22 +130,21 @@ class CurrentQuestCard extends Component {
             <Image style={style.image} src={activeQuest.backgroundImg} />
             <Card.Content style={style.content}>
               <h1>
-                Current Quest
                 <span style={style.iconSpan}>
-                  <Icon className='star' name='star' color={activeQuest.completion > 0 ? 'yellow' : 'grey'} />
-                  <Icon className='star' name='star' color={activeQuest.completion > 1 ? 'yellow' : 'grey'} />
-                  <Icon className='star' name='star' color={activeQuest.completion > 2 ? 'yellow' : 'grey'} />
+                  <Icon name='favorite' color={completion > 0 ? 'yellow' : 'grey'} />
+                  <Icon name='favorite' color={completion > 1 ? 'yellow' : 'grey'} />
+                  <Icon name='favorite' color={completion > 2 ? 'yellow' : 'grey'} />
                 </span>
               </h1>
               
               <Card.Header content={activeQuest.name} style={style.cardHeader} />
-              <Card.Description style={style.cardDescription} content={handleDescription(activeQuest)}>
+              <Card.Description style={style.cardDescription} content={handleDescription(activeQuest, completion)}>
 
               </Card.Description>
             
             </Card.Content>   
-            <Button onClick={beginQuest} content='Begin Quest' icon='play' style={style.buttonBegin} color='red' />
-            <Button onClick={completeQuest} content='Complete Quest' icon='winner' style={style.buttonComplete} color='yellow' />       
+            <Button onClick={beginQuest} content='BEGIN QUEST' icon='play' style={style.buttonBegin} color='red' />
+            <Button onClick={completeQuest} content='COMPLETE QUEST' icon='winner' style={style.buttonComplete} color='yellow' />       
 
           </Card>
         </Container>

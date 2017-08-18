@@ -23,7 +23,7 @@ class QuestCard extends Component {
 
   render() {
     const { showPopup, popupQuest } = this.state;
-    const { questList, activeQuest, handleClick, cardQuests, cardTitle, cardBackground, cardColor, questLineIndex, handleDescription } = this.props;
+    const { questList, activeQuest, handleClick, cardQuests, cardTitle, cardBackground, cardColor, questLineIndex, handleDescription, handleCompletion } = this.props;
 
     const style = {
       container: {
@@ -52,17 +52,18 @@ class QuestCard extends Component {
           <Card.Content>
           <Image src={cardBackground} style={style.image}/>
           <Card.Header content={cardTitle} style={style.header} />
-          <PopupQuestDetail showPopup={showPopup} quest={popupQuest || questList[0]} handleDescription={handleDescription} />
+          <PopupQuestDetail showPopup={showPopup} quest={popupQuest || questList[0]} handleDescription={handleDescription} handleCompletion={handleCompletion} />
 
-          {cardQuests.map((questIndex, i) => 
+          {cardQuests.map((questId, i) => 
             <QuestIcon 
               onMouseEnter={this.onMouseEnter} 
               onMouseLeave={this.onMouseLeave} 
               handleClick={handleClick} 
-              quest={questList[questIndex]} 
+              quest={questList[questId]} 
               activeQuest={activeQuest}
-              i={questIndex} 
-              key={i}/>
+              completion={handleCompletion(questId)}
+              champ={questList ? questList[questId].champ : null}
+              key={i} />
           )}
           
           </Card.Content>          
