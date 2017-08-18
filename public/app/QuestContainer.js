@@ -25,12 +25,16 @@ class QuestContainer extends Component {
 
   componentWillReceiveProps = (nextProps) => {
     if(nextProps.userQuests) {
+      console.log('questcontainer: replacing questlist')
       const { questList } = this.state
       const newQuestList = questList.map((quest, i) => {
         return Object.assign({}, quest, nextProps.userQuests[i]);
       })
       this.setState({questList: newQuestList})
     }
+
+    if(nextProps.currentQuestId && this.state.questList)
+      this.setState({activeQuest: this.state.questList[nextProps.currentQuestId]})
   }
 
   handleClick = (i) => {
@@ -74,7 +78,7 @@ class QuestContainer extends Component {
             return quest;
           }
         });
-        console.log('completed quest', questUpdate.completion)
+        console.log('completed quest', res.data)
         this.setState({questList: questListUpdate, selectedQuest: questUpdate, activeQuest: null })
       } else {
         console.log('failed quest')
@@ -153,7 +157,7 @@ class QuestContainer extends Component {
       userQuests } = this.props; 
 
     return (
-      <div>
+      <div className='questContainer'>
         {questList && 
           <CurrentQuestCard 
           handleCompletion={this.handleCompletion} 

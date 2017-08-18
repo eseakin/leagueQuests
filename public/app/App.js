@@ -25,7 +25,8 @@ class App extends Component {
       .then((res) => true)
       .catch((error) => console.log(error));
     }
-    this.getSummonerData('NA1', 'escape goat');
+
+    this.getSummonerData('NA1', 'label out');
   }
 
   componentWillUnmount() {
@@ -97,13 +98,11 @@ class App extends Component {
     const skinPath = 'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/';
     const splashPath = 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/';
 
-    // let iconSize = windowWidth > 600 ? 110 : 70;
-    // let iconsPerRow = Math.floor(windowWidth / iconSize);
-
     return (
       <div className="App" style={{height: windowHeight}}>
         <div className="App-header">
           <img src="../leagueQuests.png" alt="Welcome to League Skins"/>
+          <p style={{color: 'white', float: 'right', marginRight: 10}}>SUMMONER NAME: {summonerName}</p>
         </div>
 
         <QuestContainer 
@@ -115,6 +114,10 @@ class App extends Component {
           questStart={questStart}
           userQuests={userQuests}
         />
+
+        <div className='footer' style={{color:'white'}}>
+        
+        </div>
 
         <div className='background'>
           <img className='champDetailBackground' src={backgroundUrl} />

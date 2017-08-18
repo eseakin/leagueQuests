@@ -44,10 +44,18 @@ body {
 .questContainer {
   margin-top: 20px;
   /*border: 1px solid red;*/
+  /*padding-bottom: 100px;*/
+  margin-bottom: 150px;
 }
 
 .icon {
-  transition: 2s color;
+  transition: .5s color;
+}
+
+@keyframes bounce {
+    15%  {margin-top: -5px; }
+    85%   {margin-top: -5px; }
+    100% {margin-top: 5px; }
 }
 
 .questIconContainer {

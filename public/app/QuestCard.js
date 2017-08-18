@@ -50,7 +50,12 @@ class QuestCard extends Component {
         top: 30,
         right: 30,
         color: 'white',
-        fontSize: '2em'
+        fontSize: '2em',
+        fontFamily: 'Marcellus SC',
+        // fontWeight: '300',
+        // fontStyle: 'italic'
+
+        // fontFamily: 'Walter Turncoat'
       },
       image: {
         opacity: .5
