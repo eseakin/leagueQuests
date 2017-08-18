@@ -7,7 +7,8 @@ class CurrentQuestCard extends Component {
     super(props);
   
     this.state = {
-      scrollY: 0
+      scrollY: 0,
+      completion: 0
     };
   }
 
@@ -20,18 +21,9 @@ class CurrentQuestCard extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    console.log('current quest props', nextProps)
-    this.setState({completion: this.props.handleCompletion(nextProps.activeQuest.id)})
+    if(nextProps.selectedQuest)
+      this.setState({completion: this.props.handleCompletion(nextProps.selectedQuest.id)})
   }
-
-  // shouldComponentUpdate = (nextProps, nextState) => {
-  //   const completion = this.props.handleCompletion(nextProps.activeQuest.id)
-
-  //   if(completion != this.state.completion || nextProps.activeQuest.id != this.props.activeQuest.id || this.state.scrollY != nextState.scrollY)
-  //     return true;
-  //   else
-  //     return false;
-  // }
 
   handleScroll = () => {
       this.setState({
@@ -42,7 +34,7 @@ class CurrentQuestCard extends Component {
 
   render() {
     const { scrollY, completion } = this.state;
-    const { activeQuest, beginQuest, completeQuest, handleDescription, handleCompletion } = this.props;
+    const { selectedQuest, activeQuest, beginQuest, completeQuest, handleDescription, handleCompletion } = this.props;
 
     const style = {
       div: {
@@ -80,9 +72,6 @@ class CurrentQuestCard extends Component {
         right: 0,
         zIndex: 1
       },
-      iconSpan: {
-        // marginLeft: 25
-      },
       content: {
         position: 'absolute',
         backgroundColor: 'rgba(0, 50, 100, 0.8)',
@@ -103,53 +92,71 @@ class CurrentQuestCard extends Component {
         width: '100%',
         fontSize: 18
       },
-      buttonBegin: {
-        fontFamily: 'Merriweather',
-        position: 'absolute',
-        top: 30,
-        right: 30,
-        zIndex: 3,
-        width: 180,
-        fontSize: 12
+      iconDiv: {
+        display: 'flex',
+        alignItems: 'center',
+        marginTop: 20
       },
-      buttonComplete: {
+      iconSpan: {
+        fontSize: 25, 
+        marginTop: 5
+      },
+      button: {
         fontFamily: 'Merriweather',
-        position: 'absolute',
-        top: 80,
-        right: 30,
         zIndex: 3,
+        margin: '0 0 0 25px',
+        width: 180,
         fontSize: 12,
-        width: 180
-      }
+        boxShadow: '0px 0px 7px 3px rgba(255,255,255,0.2)'
+      },
     };
 
-    return (
-      <div style={scrollY < 100 ? style.div : style.divScroll}>
-        <Container style={style.container}>
-          <Card centered style={style.card}>
-            <Image style={style.image} src={activeQuest.backgroundImg} />
-            <Card.Content style={style.content}>
-              <h1>
-                <span style={style.iconSpan}>
-                  <Icon name='favorite' color={completion > 0 ? 'yellow' : 'grey'} />
-                  <Icon name='favorite' color={completion > 1 ? 'yellow' : 'grey'} />
-                  <Icon name='favorite' color={completion > 2 ? 'yellow' : 'grey'} />
-                </span>
-              </h1>
+    if(selectedQuest)
+      return (
+        <div style={scrollY < 100 ? style.div : style.divScroll}>
+          <Container style={style.container}>
+            <Card centered style={style.card}>
+              <Image style={style.image} src={selectedQuest.backgroundImg} />
+              <Card.Content style={style.content}>
+                
+                <Card.Header content={selectedQuest.name} style={style.cardHeader} />
+                <Card.Description style={style.cardDescription} content={handleDescription(selectedQuest, completion)} />
+                <div style={style.iconDiv} >
+                  <span style={style.iconSpan}>
+                    <Icon name='favorite' color={completion > 0 ? 'yellow' : 'grey'} />
+                    <Icon name='favorite' color={completion > 1 ? 'yellow' : 'grey'} />
+                    <Icon name='favorite' color={completion > 2 ? 'yellow' : 'grey'} />
+                  </span>
+                  {(!activeQuest || (selectedQuest && selectedQuest.id != activeQuest.id)) && <Button onClick={beginQuest} content='BEGIN QUEST' icon='play' style={style.button} color='red' />}
+                  {activeQuest && selectedQuest && selectedQuest.id === activeQuest.id && <Button onClick={completeQuest} content='COMPLETE QUEST' icon='winner' style={style.button} color='yellow' />}
+                </div>
+              </Card.Content>   
               
-              <Card.Header content={activeQuest.name} style={style.cardHeader} />
-              <Card.Description style={style.cardDescription} content={handleDescription(activeQuest, completion)}>
 
-              </Card.Description>
-            
-            </Card.Content>   
-            <Button onClick={beginQuest} content='BEGIN QUEST' icon='play' style={style.buttonBegin} color='red' />
-            <Button onClick={completeQuest} content='COMPLETE QUEST' icon='winner' style={style.buttonComplete} color='yellow' />       
+            </Card>
+          </Container>
+        </div>
+      )
 
-          </Card>
-        </Container>
-      </div>
-    )
+    else
+      return (
+        <div style={scrollY < 100 ? style.div : style.divScroll}>
+          <Container style={style.container}>
+            <Card centered style={style.card}>
+              <Image style={style.image} src={'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Twitch_6.jpg'} />
+              <Card.Content style={style.content}>
+                
+                <Card.Header content={'Adventure Awaits You'} style={style.cardHeader} />
+                <Card.Description style={style.cardDescription}>
+                  <p style={{textAlign: 'center'}}>Please select a quest below</p>
+                  <p style={{textAlign: 'center'}}><Icon name='chevron down' size='large' style={{color: '#ddd'}}/></p>
+                </Card.Description>              
+              </Card.Content>   
+              
+            </Card>
+          </Container>
+        </div>
+      )
   }
 }
 
