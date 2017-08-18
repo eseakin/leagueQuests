@@ -46,6 +46,14 @@ body {
   /*border: 1px solid red;*/
 }
 
+.icon {
+  transition: 2s color;
+}
+
+.questIconContainer {
+  transition: 2s box-shadow;
+}
+
 .btn {
   padding: 5px 10px;
   font-size: 20px;
