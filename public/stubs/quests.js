@@ -562,6 +562,29 @@ const quests = [
         path: 'participants/$participantIndex/stats/'
       }
     ],
+  },
+  {
+    id: 23,
+    name: 'Can\'t Touch This!',
+    description: 'Die no more than $ / $ / $ times in a single game',
+    // category: ,
+    completion: 0,
+    startedTimestamp: null,
+    isComplete: false,
+    style: {
+      top: 200,
+      left: 460
+    },
+    iconPath: 'http://ddragon.leagueoflegends.com/cdn/7.13.1/img/champion/Twitch.png',
+    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jayce_0.jpg',
+    requirements: [
+      {
+        type: 'less than',
+        displayValues: [4, 2, 0],
+        values: [4, 2, 0],
+        path: 'participants/$participantIndex/stats/deaths'
+      }
+    ],
   }
 ]
 
@@ -576,7 +599,7 @@ const nocturnesQuests = {
   cardTitle: 'Nocturne\'s Nightwatch',
   cardBackground: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nocturne_5.jpg',
   cardColor: '#5b0e0e',
-  quests: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+  quests: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
 }
 
 const singedsQuests = {
@@ -589,7 +612,7 @@ const singedsQuests = {
   ]
 }
 
-const questList = {
+const stubQuestList = {
   questCards: [
     tristanasQuests,
     nocturnesQuests,
@@ -599,5 +622,5 @@ const questList = {
 }
 
 export {
-  questList
+  stubQuestList
 }
