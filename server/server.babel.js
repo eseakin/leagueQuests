@@ -5,7 +5,7 @@ const favicon = require('serve-favicon');
 const axios = require('axios');
 const fb = require('firebase');
 const hasher = require('object-hash');
-// const { questList } = require('./public/stubs/quests');
+const { stubQuestList } = require('../public/stubs/quests');
 import _ from 'lodash';
 
 const app = express();
@@ -34,7 +34,7 @@ app.get('/', function (req, res) {
 });
 
 // Save quests to DB
-// db.ref('/quests').set(questList)
+// db.ref('/quests').set(stubQuestList).then((response) => console.log('quests saved')).catch((error) => console.log(error)); 
 
 // const escapeGoat = {
 //   summonerName: 'eScape Goat',
@@ -257,7 +257,10 @@ const matchInfoPathParser = (path, matchInfo, user) => {
 }
 
 const checkPriorQuestCompletion = (result) => {
-  const priorResults = result.user.userQuests[result.user.currentQuestId].completion;
+  let priorResults = 0;
+  if(result.user.userQuests[result.user.currentQuestId])
+    priorResults = result.user.userQuests[result.user.currentQuestId].completion;
+  
   const completion = result.completion.reduce((biggest, value) => Math.max(biggest, value), 0);
   result.completion = completion;
   result.champ = _.find(champData, (champ) => champ.id === result.user.$champion).key;
