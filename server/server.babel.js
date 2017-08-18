@@ -4,9 +4,13 @@ const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const axios = require('axios');
 const fb = require('firebase');
-const hasher = require('object-hash');
-const { stubQuestList } = require('../public/stubs/quests');
 import _ from 'lodash';
+
+const { stubQuestList } = require('../public/stubs/quests');
+const { beginQuest, completeQuest, saveQuestsToDb } = require('./questHelpers');
+const { getSummonerInfoFromRiot, saveSummonerInfo, getRecentMatches, getMatchByGameId, getChampDataFromRiot } = require('./riotHelpers');
+const {  } = require('./userHelpers');
+const { resetStubUserData } = require('./stubHelpers');
 
 const app = express();
 
@@ -33,19 +37,16 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
-// Save quests to DB
-// db.ref('/quests').set(stubQuestList).then((response) => console.log('quests saved')).catch((error) => console.log(error)); 
 
-// const escapeGoat = {
-//   summonerName: 'eScape Goat',
-//   accountId: '43757987',
-//   profileIcon: '2095',
-//   region: 'NA1',
-//   summonerId: '29549543',
-//   userQuests: new Array(23).fill({completion: 0, champ: '', time: ''})
-// }
-// db.ref('/users/NA1/ESCAPE GOAT').set(escapeGoat).then((response) => console.log('user saved')).catch((error) => console.log(error)); 
+// // Save quests to DB
+// saveQuestsToDb(stubQuestList, db);
 
+
+// Make sure champion data is current
+// getChampDataFromRiot(db); // Only needs to be run at patch time
+
+
+// cache quests and champ data
 let questList, champData;
 
 db.ref('/quests/quests').once('value')
@@ -56,90 +57,43 @@ db.ref('/champData').once('value')
   .then((snap) => champData = snap.val().data)
   .catch((error) => console.log(error)); 
 
-// Make sure data is current
-const compareRiotDataHash = function() {
-  db.ref('/champData/hash').once('value')
-    .then(snapshot => {
-      const dbHash = snapshot.val();
-
-      const route = `https://na1.api.riotgames.com/lol/static-data/v3/champions?locale=en_US&tags=skins&dataById=false&api_key=${process.env.RIOT_API_KEY}`;
-
-      axios.get(route)
-        .then((response) => {
-          console.log('success')
-          let riotHash = hasher(response.data);
-          
-          if(riotHash != dbHash)
-            db.ref('/champData').set(response.data)
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-}
-// Only needs to be run at patch time
-// compareRiotDataHash();
 
 
-// Client requests champion data
-app.get('/champData', (req, res) => {
-  console.log('champData');
-  db.ref('/champData').once('value')
-    .then(snap => res.send(snap.val()))
-    .catch(err => console.log(err));
-});
-
-
-
+// get summoner info
 app.get('/summonerData/:region/:summonerName', (req, res) => {
   const { region, summonerName } = req.params;
-  const route = `https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/${summonerName}?api_key=${process.env.RIOT_API_KEY}`;
 
   db.ref(`users/${region}/${summonerName.toUpperCase()}`).once('value')
   .then((snap) => {
+    // summoner was in db
     if(snap.val())
       res.send(snap.val())
-    else
-      res.send('user not found');
+
+    // pull summoner from riot
+    else {
+      getSummonerInfoFromRiot(region, summonerName)
+        .then((response) => {
+          const { id, accountId, name, profileIconId } = response;
+          const info = {
+            accountId,
+            profileIconId,
+            region,
+            summonerId: id,
+            summonerName: name,
+          };
+
+          saveSummonerInfo(info, db)
+            .then((response) => res.send(info))
+            .catch((error) => console.log(error)); 
+        })
+        .catch((error) => console.log(error)); 
+    }
   })
   .catch((error) => console.log(error)); 
+});
 
-  // axios.get(route)
-  //   .then((response) => {
-  //     const { id, accountId } = response.data;
-  //     // const route = `https://na1.api.riotgames.com/lol/champion-mastery/v3/champion-masteries/by-summoner/${id}?api_key=${process.env.RIOT_API_KEY}`
-  //     const route = `https://na1.api.riotgames.com/lol/match/v3/matchlists/by-account/${accountId}/recent?api_key=${process.env.RIOT_API_KEY}`
 
-  //     axios.get(route)
-  //       .then((response) => {
-  //         console.log(response.data)
-  //         const gameId = response.data.matches[0].gameId;
-  //         const route = `https://na1.api.riotgames.com/lol/match/v3/matches/${gameId}?api_key=${process.env.RIOT_API_KEY}`
-  //         axios.get(route)
-  //           .then((response) => {
-                
-  //             console.log(response.data)
-  //             res.send(response.data);
-  //           })
-  //           .catch((error) => {
-  //             console.log(error);
-  //           });          
-  //         // console.log(response.data.matches[0].gameId)
-  //         // res.send(response.data);
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //   })
-  //   .catch((error) => {
-  //     console.log(error);
-  //   });
-})
-
-// Client gets quests
+// Client pulls main quest list
 app.get('/quests', (req, res) => {
   console.log('get quests');
 
@@ -148,144 +102,66 @@ app.get('/quests', (req, res) => {
     .catch((error) => console.log(error));
 });
 
+// Client pulls champion data
+app.get('/champData', (req, res) => {
+  console.log('champData');
+  db.ref('/champData').once('value')
+    .then(snap => res.send(snap.val()))
+    .catch(err => console.log(err));
+});
+
 // Client begins quest
-app.get('/beginQuest/:region/:summonerName/:questId', (req, res) => {
-  console.log('beginQuest', req.params.summonerName, req.params.questId);
+app.get('/beginQuest/:region/:summonerName/:currentQuestId', (req, res) => {
+  const { region, summonerName, currentQuestId } = req.params;
 
-  const region = req.params.region;
-  const summonerName = req.params.summonerName;
-  const questId = req.params.questId;
-
-  db.ref(`/users/${region}/${summonerName.toUpperCase()}`).once('value')
+  db.ref(`users/${region}/${summonerName.toUpperCase()}`).once('value')
   .then((snap) => {
-    //ADD CODE FOR USER NOT FOUND
-    if(!snap.val()) {
-      res.send('user not found');
-      return
+
+    if(snap.val()) {
+      const user = {
+        questStart: new Date(),
+        currentQuestId
+      };
+
+      db.ref(`/users/${region}/${summonerName.toUpperCase()}`).update(user)
+        .then(() => res.send(`${summonerName} started quest ${currentQuestId} at ${user.questStart}`))
+        .catch((error) => console.log(error));
+
+    } else {
+      getSummonerInfoFromRiot(region, summonerName)
+        .then((response) => {
+          const { id, accountId, name, profileIconId } = response;
+          const info = {
+            accountId,
+            profileIconId,
+            region,
+            summonerId: id,
+            summonerName: name,
+            questStart: new Date(),
+            currentQuestId
+          };
+
+          saveSummonerInfo(info, db)
+            .then((response) => {
+              res.send(`${summonerName} started quest ${currentQuestId} at ${user.questStart}`);
+            })
+            .catch((error) => console.log(error)); 
+        })
+        .catch((error) => console.log(error)); 
     }
+  });
 
-    const user = snap.val();
-    user.currentQuestId = questId;
-    user.questStart = new Date().getTime();
-    const update = Object.assign({}, user);
-
-    db.ref(`/users/${region}/${summonerName.toUpperCase()}`).update(update)
-    .then(() => res.send(`${summonerName} started quest ${questId} at ${user.questStart}`))
-    .catch((error) => console.log(error));
-    
-
-  })
-  .catch((error) => console.log(error));
-
+  // beginQuest(req.params, res, db);
 });
 
 
 //client completes quest
 app.get('/completeQuest/:region/:summonerName', (req, res) => {
-  const { region, summonerName } = req.params;
-  const route = `https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/${summonerName}?api_key=${process.env.RIOT_API_KEY}`;
-  
-  db.ref(`/users/${region}/${summonerName.toUpperCase()}`).once('value')
-  .then((snap) => {
-    const user = snap.val();
-    if(!user.currentQuestId)
-      res.send('no quest selected')
-    
-    //MATCH INFO TESTING ONLY***************
-    db.ref('/stubData/matchInfo').once('value')
-      .then(matchInfo => {
-        checkQuestCompletion(matchInfo.val(), summonerName, user)
-        .then((result) => res.send(result))
-        .catch((error) => console.log(error));
-      })
-      .catch(err => console.log(err));
-    //***************************
-  })
-  .catch((error) => console.log(error));
+  completeQuest(req.params, db, questList)
+    .then((result) => res.send(result))
+    .catch((error) => console.log(error)); 
+});
 
-
-})
-
-const checkQuestCompletion = (matchInfo, summonerName, user) => {
-  // if(parseInt(matchInfo.gameCreation) + 5 * 60 * 60 * 1000 < user.questStart)
-  //   return 'Quest started too late: ' + matchInfo.gameCreation + ' ' + user.questStart
-
-  let result = {};
-  const questId = user.currentQuestId;
-  const quest = questList[questId];
-
-  const participant = _.find(matchInfo.participantIdentities, (participant) => participant.player.summonerName.toUpperCase() === summonerName.toUpperCase());
-
-  user.$participantId = participant.participantId;
-  user.$participantIndex = user.$participantId - 1;
-  user.$team = user.$participantIndex < 5 ? 0 : 1;
-  user.$champion = matchInfo.participants[user.$participantIndex].championId;
-
-  result.questId = questId;
-  result.user = user;
-  result.userData = [];
-
-  result.completion = quest.requirements.map((requirement, i) => {
-    let userData = matchInfoPathParser(requirement.path, matchInfo, user);
-    result.userData[i] = userData;
-
-    if(requirement.type === 'greater than')
-      return requirement.values.reduce((sum, value) => userData >= value ? sum + 1 : sum, 0);
-    else if(requirement.type === 'less than')
-      return requirement.values.reduce((sum, value) => userData <= value ? sum + 1 : sum, 0);
-    else if(requirement.type === 'multipath bool')
-      return 'not implemented yet'
-  });
-
-  return checkPriorQuestCompletion(result);
-}
-
-const matchInfoPathParser = (path, matchInfo, user) => {
-  // path = 'participants/$participantIndex/stats/assists'
-
-  path = path.split('/');
-  let result = Object.assign({}, matchInfo);
-
-  path.forEach((key) => {
-    if(key[0] === '$') {
-      key = user[key];
-    }
-    result = result[key];
-  });
-
-  return result;
-}
-
-const checkPriorQuestCompletion = (result) => {
-  let priorResults = 0;
-  if(result.user.userQuests[result.user.currentQuestId])
-    priorResults = result.user.userQuests[result.user.currentQuestId].completion;
-  
-  const completion = result.completion.reduce((biggest, value) => Math.max(biggest, value), 0);
-  result.completion = completion;
-  result.champ = _.find(champData, (champ) => champ.id === result.user.$champion).key;
-  result.time = new Date().getTime();
-  console.log('compare', priorResults, completion)
-
-  if(priorResults < completion) {
-    result.message = 'Quest Success!'
-    const update = {};
-    update[`userQuests/${result.questId}/completion`] = completion;
-    update[`userQuests/${result.questId}/champ`] = result.champ;
-    update[`userQuests/${result.questId}/time`] = result.time;
-
-    return db.ref(`/users/${result.user.region}/${result.user.summonerName.toUpperCase()}`).update(update)
-      .then((snap) => {
-        return result;
-      })
-      .catch((error) => console.log(error));
-
-
-  } else {
-    result.message = 'Quest failed'
-    return new Promise((resolve, reject) => resolve(result));
-  }
-}
 
 app.post('/youtube', (req, res) => {
   // console.log('youtube')
@@ -316,14 +192,4 @@ app.get('/visitorCount', (req, res) => {
 let port = process.env.PORT || 9000;
 
 app.listen(port);
-console.log('app listening on ' + port)
-
-
-
-
-
-
-
-
-
-
+console.log('app listening on ' + port);
