@@ -72,7 +72,7 @@ app.post('/login/:username/:password', (req, res) => {
   fb.auth().signInWithEmailAndPassword(username, password)
     .then(
       (response) => {
-        console.log(response)
+        console.log('logged in', response)
         res.send({ loggedIn: true })
       }, 
       (err) => {
@@ -225,7 +225,7 @@ app.get('/visitorCount', (req, res) => {
   db.ref('/visitorCount').transaction((count) => {
     count = count || 0;
     return count + 1;
-  })
+  }).then(() => res.send())
     .catch(err => console.log(err));
 });
 
