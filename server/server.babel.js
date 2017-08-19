@@ -11,6 +11,7 @@ const { beginQuest, completeQuest, saveQuestsToDb } = require('./questHelpers');
 const { getSummonerInfoFromRiot, saveSummonerInfo, getRecentMatches, getMatchByGameId, getChampDataFromRiot } = require('./riotHelpers');
 const {  } = require('./userHelpers');
 const { resetStubUserData } = require('./stubHelpers');
+const { logAndSend } = require('./logHelpers');
 
 const app = express();
 
@@ -57,26 +58,32 @@ app.get('/', (req, res) => {
 let questList, champData;
 
 db.ref('/quests/quests').once('value')
-  .then((snap) => questList = snap.val())
+  .then((snap) => {
+    console.log('quest list retrieved')
+    questList = snap.val()
+  })
   .catch((error) => console.log(error)); 
 
 db.ref('/champData').once('value')
-  .then((snap) => champData = snap.val().data)
+  .then((snap) => {
+    console.log('champ data retrieved')
+    champData = snap.val().data
+  })
   .catch((error) => console.log(error)); 
 
 
 // client logs in
 app.post('/login/:username/:password', (req, res) => {
   const { username, password } = req.params;
-  console.log(username, password)
+  console.log('login received', username, password)
   fb.auth().signInWithEmailAndPassword(username, password)
     .then(
-      (response) => {
-        console.log('logged in', response)
-        res.send({ loggedIn: true })
+      (user) => {
+        console.log('logged in', username, user)
+        res.send({ loggedIn: true, user })
       }, 
       (err) => {
-        console.log('fail', err.message)
+        console.log('login fail', username, err.message)
         const failed = { loggedIn: false, message: err.message }
         res.send(failed)
       }
@@ -86,16 +93,20 @@ app.post('/login/:username/:password', (req, res) => {
 // client creates account
 app.post('/createNewAccount/:username/:password', (req, res) => {
   const { username, password } = req.params;
-  console.log(username, password)
+  console.log('create account', username, password)
 
-  fb.auth().createUserWithEmailAndPassword(username, password).then(user => res.send(user), (error) => {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
+  fb.auth().createUserWithEmailAndPassword(username, password)
+    .then(user => {
+      console.log('account created', username, user)
+      res.send({loggedIn: true, user})
+    }, (error) => {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
 
-    console.log(error.code, error.message)
-    res.send(error.message)
-  });
+      console.log('create account error', error.code, error.message)
+      res.send(error.message)
+    });
 })
 
 
