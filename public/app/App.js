@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
 import QuestContainer from './QuestContainer';
-// import {Popup} from 'semantic-ui-react'
-// import ChampDetail from './ChampDetail';
+import {Image, Icon} from 'semantic-ui-react'
+import Login from './Login';
+import fb from 'firebase';
 
 class App extends Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class App extends Component {
       resizeUpdate: false,
       activeView: 'quests',
       backgroundUrl: 'http://cdn.leagueoflegends.com/lolkit/1.1.6/resources/images/bg-default.jpg',
+      loggedIn: false
     };
   }
 
@@ -26,7 +28,7 @@ class App extends Component {
       .catch((error) => console.log(error));
     }
 
-    this.getSummonerData('NA1', 'label out');
+    // this.getSummonerData('NA1', 'label out');
   }
 
   componentWillUnmount() {
@@ -46,6 +48,15 @@ class App extends Component {
     //   })
     // .catch((err) => console.log(err));
 
+    axios.get('/config')
+    .then((res) => {
+        console.log('config', res.data)
+        this.setState({
+          fb: fb.initializeApp(res.data),
+        });
+      })
+    .catch((err) => console.log(err));
+
   }
 
   updateDimensions = () => {
@@ -61,13 +72,51 @@ class App extends Component {
     }
   }
 
+  createNewAccount = (data) => {
+    let { username, password } = data;
+    console.log('app create account', username, password)
+
+    axios.post(`/createNewAccount/${username}/${password}`)
+      .then((response) => {
+          if(!response.data.message) {
+            console.log('success', response.data)
+            this.setState({loggedIn: true, user: response.data});
+          } else {
+            console.log('fail', response.message)
+            this.setState({status: response.message})
+          }
+      })
+      .catch((error) => console.log(error));
+  }
+
+  loginSubmit = (data) => {
+    let { username, password } = data;
+    console.log('app submit', username, password)
+
+    this.getSummonerData('NA1', username);
+    //DEV ONLY
+    // username = '2@2.com';
+    // password = '123456';
+
+    // axios.post(`/login/${username}/${password}`)
+    //   .then((response) => {
+    //       if(response.loggedIn) {
+    //         console.log('axios this', this)
+    //         this.setState({loggedIn: true, userId: response.uid});
+    //       } else {
+    //         this.setState({status: response.message})
+    //       }
+    //   })
+    //   .catch((error) => console.log(error));
+  }
+
   getSummonerData = (region, summonerName) => {
     // summonerName = 'escape goat'
     axios.get(`summonerData/${region}/${summonerName}`)
     .then((res) => {
         console.log('summonerData', res.data)
-        const { accountId, summonerName, region, currentQuestId, profileIcon, questStart, userQuests } = res.data
-        this.setState({ accountId, summonerName, region, currentQuestId, profileIcon, questStart, userQuests });
+        const { accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests } = res.data
+        this.setState({ accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests, loggedIn: true });
       })
     .catch((err) => console.log(err));
   }
@@ -86,9 +135,10 @@ class App extends Component {
       accountId,
       region,
       currentQuestId,
-      profileIcon,
+      profileIconId,
       questStart,
-      userQuests
+      userQuests,
+      loggedIn
        } = this.state;
 
     const version = '7.16.1'   
@@ -97,12 +147,20 @@ class App extends Component {
     const iconPath = 'http://ddragon.leagueoflegends.com/cdn/' + version + '/img/champion/';
     const skinPath = 'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/';
     const splashPath = 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/';
+    console.log(profileIconId)
 
     return (
       <div className="App" style={{height: windowHeight}}>
         <div className="App-header">
           <img src="../leagueQuests.png" alt="Welcome to League Skins"/>
-          <p style={{color: 'white', float: 'right', marginRight: 10}}>SUMMONER NAME: {summonerName}</p>
+
+          {!loggedIn &&
+            <Login loginSubmit={this.loginSubmit} status={loggedIn} createNewAccount={this.createNewAccount} />
+          }
+
+
+          <p style={{color: 'white', float: 'right', marginRight: 10}}>{summonerName}</p>
+          {profileIconId && <Image src={`http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/${profileIconId}.png`} style={{float: 'right', width: 50}}/>}
         </div>
 
         <QuestContainer 
@@ -110,7 +168,7 @@ class App extends Component {
           accountId={accountId} 
           region={region} 
           currentQuestId={currentQuestId}
-          profileIcon={profileIcon}
+          profileIconId={profileIconId}
           questStart={questStart}
           userQuests={userQuests}
         />

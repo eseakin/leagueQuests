@@ -113,7 +113,7 @@ class CurrentQuestCard extends Component {
         margin: '0 0 0 25px',
         width: 180,
         fontSize: 12,
-        boxShadow: '0px 0px 7px 3px rgba(255,255,255,0.2)'
+        animation: activeQuest ? '' : 'buttonPulse infinite 4s ease-in-out'
       },
     };
 
@@ -128,6 +128,7 @@ class CurrentQuestCard extends Component {
                   
                   <Card.Header content={selectedQuest.name} style={style.cardHeader} />
                   <Card.Description style={style.cardDescription} content={handleDescription(selectedQuest, completion)} />
+
                   <div style={style.iconDiv} >
                     <span style={style.iconSpan}>
                       <Icon name='favorite' color={completion > 0 ? 'yellow' : 'grey'} />
@@ -137,8 +138,7 @@ class CurrentQuestCard extends Component {
                     {(!activeQuest || (selectedQuest && selectedQuest.id != activeQuest.id)) && <Button onClick={beginQuest} content='BEGIN QUEST' icon='play' style={style.button} color='red' />}
                     {activeQuest && selectedQuest && selectedQuest.id === activeQuest.id && <Button onClick={completeQuest} content='COMPLETE QUEST' icon='winner' style={style.button} color='yellow' />}
                   </div>
-                </Card.Content>   
-                
+                </Card.Content>
 
               </Card>
             </Container>
@@ -155,13 +155,13 @@ class CurrentQuestCard extends Component {
                 <Image style={style.image} src={'http://na.leagueoflegends.com/sites/default/files/styles/scale_large/public/upload/art/wp_alistar_vs_olaf_1920x1080.jpg?itok=ReGhFMdq'} />
                 <Card.Content style={style.content}>
                   
-                  <Card.Header content={'Adventure Awaits You'} style={style.cardHeader} />
+                  <Card.Header content={'Adventure Awaits!'} style={style.cardHeader} />
                   <Card.Description style={style.cardDescriptionEmpty}>
                     <div style={{textAlign: 'center', marginBottom: 10}}>Please select a quest below</div>
                     <p style={{textAlign: 'center', animation: 'bounce infinite 3s ease-out'}}><Icon name='chevron down' size='large' style={{color: '#ddd'}}/></p>
-                  </Card.Description>              
-                </Card.Content>   
-                
+                  </Card.Description>
+                </Card.Content>
+
               </Card>
             </Container>
           </div>

@@ -68,7 +68,7 @@ class QuestContainer extends Component {
     console.log('complete')
     axios.get('/completeQuest/' + this.props.region + '/' + this.props.summonerName)
     .then((res) => {
-      if(res.data) {
+      if(res.data.isComplete) {
         let questUpdate;
         const questListUpdate = this.state.questList.map((quest) => {
           if(quest.id == res.data.questId) {
@@ -78,10 +78,10 @@ class QuestContainer extends Component {
             return quest;
           }
         });
-        console.log('completed quest', res.data)
+        console.log(`completed: ${res.data.completion}/3 with ${res.data.userData[0]}`)
         this.setState({questList: questListUpdate, selectedQuest: questUpdate, activeQuest: null })
       } else {
-        console.log('failed quest')
+        console.log(res.data.message, res.data.userData[0])
       }
       })
     .catch((err) => console.log(err));
@@ -152,7 +152,7 @@ class QuestContainer extends Component {
       accountId,
       region,
       currentQuestId,
-      profileIcon,
+      profileIconId,
       questStart,
       userQuests } = this.props; 
 

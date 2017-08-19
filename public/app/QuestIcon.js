@@ -6,16 +6,19 @@ const QuestIcon = (props) => {
 
   const { handleClick, onMouseEnter, onMouseLeave, quest, hoveredQuest, selectedQuest, activeQuest, completion, champ } = props;
 
-  let outline, color;
+  let outline, color, animation;
   if(activeQuest && activeQuest.id === quest.id) {
     color = 'white'
     outline = '0px 0px 25px 5px rgba(0,247,255,1), 0 2px 3px 0 white, 0 0 0 2px white';
-  } else if((selectedQuest && selectedQuest.id === quest.id) || (hoveredQuest && hoveredQuest.id === quest.id)) {
+    animation = 'pulse infinite 4s ease-in-out'
+  } 
+  // else if((selectedQuest && selectedQuest.id === quest.id) || (hoveredQuest && hoveredQuest.id === quest.id)) {
+  else if((selectedQuest && selectedQuest.id === quest.id)) {
     color = '#ddd'
     outline = '0px 0px 25px 5px rgba(0,247,255,1)';
   } else {
     color = 'gray'
-    outline = '0 2px 3px 0 rgba(0, 75, 150, 1), 0 0 0 2px rgba(0, 75, 150, 1)';
+    // outline = '0 2px 3px 0 rgba(0, 75, 150, 1), 0 0 0 2px rgba(0, 75, 150, 1)';
   }
   
   
@@ -29,20 +32,22 @@ const QuestIcon = (props) => {
       width: 70,
       cursor: 'pointer',
       background: 'black',
-      borderRadius: '0 0 2px 2px'
+      borderRadius: '0 0 2px 2px',
+      animation: animation
     },
     questionMark: {
       fontSize: 40, 
       marginTop: 25, 
-      color: color
+      color: color,
+      transition: '.5s color',
     }
   }
 
   const iconPath = `http://ddragon.leagueoflegends.com/cdn/7.17.1/img/champion/${champ}.png`
 
   return (
-    <div style={style.container} className='questIconContainer' onMouseEnter={() => onMouseEnter(quest.id)} onMouseLeave={onMouseLeave} onClick={() => handleClick(quest.id)}>
-      <Card style={{boxShadow: outline, background: '#222'}}>
+    <div style={style.container} onMouseEnter={() => onMouseEnter(quest.id)} onMouseLeave={onMouseLeave} onClick={() => handleClick(quest.id)}>
+      <Card style={{boxShadow: outline, background: '#222'}} className='questIconContainer'>
         <div style={{width: 70, height: 70, background: 'black'}}>
         {completion > 0 && <Image src={iconPath} fluid centered />}
         {completion === 0 && <Icon name='question circle' style={style.questionMark} />}

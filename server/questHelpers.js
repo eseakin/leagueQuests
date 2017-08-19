@@ -126,17 +126,18 @@ const checkPriorQuestCompletion = (result, db) => {
 
       if(priorResults < completion) {
         result.message = 'Quest Success!'
+        result.isComplete = true;
         const update = {};
         update[`userQuests/${result.questId}/completion`] = completion;
         update[`userQuests/${result.questId}/champ`] = result.champ;
         update[`userQuests/${result.questId}/time`] = result.time;
+        update[`userQuests/${result.questId}/best`] = result.userData;
 
         return db.ref(`/users/${result.user.region}/${result.user.summonerName.toUpperCase()}`).update(update)
-          .then((snap) => {
-            return result;
-          })
+          .then((snap) => result)
           .catch((error) => console.log(error));
       } else {
+        result.isComplete = false;
         result.message = 'Quest failed'
         return new Promise((resolve, reject) => resolve(result));
       }

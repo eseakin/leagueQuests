@@ -3,7 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const axios = require('axios');
-const fb = require('firebase');
+import fb from 'firebase';
 import _ from 'lodash';
 
 const { stubQuestList } = require('../public/stubs/quests');
@@ -33,7 +33,14 @@ const config = {
 fb.initializeApp(config);
 const db = fb.database();
 
-app.get('/', function (req, res) {
+//fb testing
+app.get('/config', (req, res) => {
+  res.send(config);
+})
+
+
+
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
@@ -57,6 +64,39 @@ db.ref('/champData').once('value')
   .then((snap) => champData = snap.val().data)
   .catch((error) => console.log(error)); 
 
+
+// client logs in
+app.post('/login/:username/:password', (req, res) => {
+  const { username, password } = req.params;
+  console.log(username, password)
+  fb.auth().signInWithEmailAndPassword(username, password)
+    .then(
+      (response) => {
+        console.log(response)
+        res.send({ loggedIn: true })
+      }, 
+      (err) => {
+        console.log('fail', err.message)
+        const failed = { loggedIn: false, message: err.message }
+        res.send(failed)
+      }
+  );
+})
+
+// client creates account
+app.post('/createNewAccount/:username/:password', (req, res) => {
+  const { username, password } = req.params;
+  console.log(username, password)
+
+  fb.auth().createUserWithEmailAndPassword(username, password).then(user => res.send(user), (error) => {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+
+    console.log(error.code, error.message)
+    res.send(error.message)
+  });
+})
 
 
 // get summoner info
