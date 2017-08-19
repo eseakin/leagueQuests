@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
 import QuestContainer from './QuestContainer';
-import {Image, Icon} from 'semantic-ui-react'
+import { Image, Icon, Modal } from 'semantic-ui-react'
 import Login from './Login';
-import fb from 'firebase';
 
 class App extends Component {
   constructor(props) {
@@ -16,7 +15,8 @@ class App extends Component {
       resizeUpdate: false,
       activeView: 'quests',
       backgroundUrl: 'http://cdn.leagueoflegends.com/lolkit/1.1.6/resources/images/bg-default.jpg',
-      loggedIn: false
+      loggedIn: false,
+      showModal: false
     };
   }
 
@@ -93,21 +93,21 @@ class App extends Component {
     let { username, password } = data;
     console.log('app submit', username, password)
 
-    this.getSummonerData('NA1', username);
-    //DEV ONLY
-    // username = '2@2.com';
-    // password = '123456';
+    // this.getSummonerData('NA1', username);
+    DEV ONLY
+    username = '2@2.com';
+    password = '123456';
 
-    // axios.post(`/login/${username}/${password}`)
-    //   .then((response) => {
-    //       if(response.loggedIn) {
-    //         console.log('axios this', this)
-    //         this.setState({loggedIn: true, userId: response.uid});
-    //       } else {
-    //         this.setState({status: response.message})
-    //       }
-    //   })
-    //   .catch((error) => console.log(error));
+    axios.post(`/login/${username}/${password}`)
+      .then((response) => {
+          if(response.loggedIn) {
+            console.log('axios this', this)
+            this.setState({loggedIn: true, userId: response.uid});
+          } else {
+            this.setState({status: response.message})
+          }
+      })
+      .catch((error) => console.log(error));
   }
 
   getSummonerData = (region, summonerName) => {

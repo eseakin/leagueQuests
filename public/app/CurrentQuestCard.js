@@ -113,7 +113,7 @@ class CurrentQuestCard extends Component {
         margin: '0 0 0 25px',
         width: 180,
         fontSize: 12,
-        animation: activeQuest ? '' : 'buttonPulse infinite 4s ease-in-out'
+        animation: activeQuest ? '' : 'buttonPulse infinite 6s ease-in-out'
       },
     };
 
