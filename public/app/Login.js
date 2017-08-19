@@ -25,17 +25,25 @@ class Login extends Component {
   }
 
   render() {
-    const { loggedIn, status } = this.props;
+    const { loggedIn, failureMessage } = this.props;
     const { username, password } = this.state;
 
     return(
-      <Form success={loggedIn} error={!!status} size='mini' onSubmit={this.handleSubmit.bind(this)} method='post' style={{position: 'absolute', top: 10, right: 10, zIndex: 7}}>
+      <Form 
+        success={loggedIn} 
+        error={!!failureMessage} 
+        size='mini' 
+        onSubmit={this.handleSubmit.bind(this)} 
+        method='post' 
+        style={{position: 'absolute', width: 210, height: 100, top: 10, right: 10, zIndex: 7}}
+      >
+
         <div className='inline'>
           <Form.Field>
-            <input placeholder='Email' name='username' value={username} onChange={this.handleChange.bind(this)}/>
+            <input placeholder='Email' name='username' value={username} onChange={this.handleChange.bind(this)} style={{padding: '3px 10px'}}/>
           </Form.Field>
           <Form.Field>
-            <input type='password' size='mini' placeholder='Password' name='password' value={password} onChange={this.handleChange.bind(this)}/>
+            <input type='password' size='mini' placeholder='Password' name='password' value={password} onChange={this.handleChange.bind(this)} style={{padding: '3px 10px'}}/>
           </Form.Field>
         </div>
 
@@ -50,7 +58,7 @@ class Login extends Component {
         />
 
         <Button 
-          style={{float: 'right', marginLeft: 20, marginTop: 10}} 
+          style={{float: 'right', marginTop: 10}} 
           type='button' 
           basic 
           compact 
@@ -60,9 +68,7 @@ class Login extends Component {
           onClick={this.handleCreateNewAccount}
         />
 
-        <Message error>
-          <p>{status}</p>
-        </Message>
+        <Message error compact content={failureMessage}/>
 
       </Form>
     )

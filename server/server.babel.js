@@ -105,7 +105,7 @@ app.post('/createNewAccount/:username/:password', (req, res) => {
       var errorMessage = error.message;
 
       console.log('create account error', error.code, error.message)
-      res.send(error.message)
+      res.send(error)
     });
 })
 

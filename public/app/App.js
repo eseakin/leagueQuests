@@ -22,6 +22,7 @@ class App extends Component {
 
   componentDidMount() {
     window.addEventListener("resize", this.updateDimensions);
+
     if(window.location.host != 'localhost:9000') {
       axios.get('/visitorCount')
       .then((res) => true)
@@ -47,16 +48,6 @@ class App extends Component {
     //     });
     //   })
     // .catch((err) => console.log(err));
-
-    axios.get('/config')
-    .then((res) => {
-        console.log('config', res.data)
-        this.setState({
-          fb: fb.initializeApp(res.data),
-        });
-      })
-    .catch((err) => console.log(err));
-
   }
 
   updateDimensions = () => {
@@ -73,8 +64,14 @@ class App extends Component {
   }
 
   createNewAccount = (data) => {
+    this.setState({status: ''})
     let { username, password } = data;
     console.log('app create account', username, password)
+
+    if(!username || !password) {
+      this.setState({failureMessage: 'Enter a username and password'});
+      return;
+    }
 
     axios.post(`/createNewAccount/${username}/${password}`)
       .then((response) => {
@@ -82,29 +79,37 @@ class App extends Component {
             console.log('success', response.data)
             this.setState({loggedIn: true, user: response.data});
           } else {
-            console.log('fail', response.message)
-            this.setState({status: response.message})
+            console.log('fail', response.data.message)
+            this.setState({failureMessage: response.data.message})
           }
       })
       .catch((error) => console.log(error));
   }
 
   loginSubmit = (data) => {
+    this.setState({status: ''})
     let { username, password } = data;
-    console.log('app submit', username, password)
 
-    // this.getSummonerData('NA1', username);
-    DEV ONLY
+    // DEV ONLY
     username = '2@2.com';
     password = '123456';
 
+    console.log('app submit', username, password)
+
+    if(!username || !password) {
+      this.setState({failureMessage: 'Enter a username and password'});
+      return;
+    }
+
+    // this.getSummonerData('NA1', username);
+
     axios.post(`/login/${username}/${password}`)
       .then((response) => {
-          if(response.loggedIn) {
-            console.log('axios this', this)
-            this.setState({loggedIn: true, userId: response.uid});
+          if(response.data.loggedIn) {
+            console.log('successful login', username)
+            this.setState({loggedIn: true, userId: response.data.uid});
           } else {
-            this.setState({status: response.message})
+            this.setState({failureMessage: response.data.message});
           }
       })
       .catch((error) => console.log(error));
@@ -138,7 +143,8 @@ class App extends Component {
       profileIconId,
       questStart,
       userQuests,
-      loggedIn
+      loggedIn,
+      failureMessage
        } = this.state;
 
     const version = '7.16.1'   
@@ -155,7 +161,7 @@ class App extends Component {
           <img src="../leagueQuests.png" alt="Welcome to League Skins"/>
 
           {!loggedIn &&
-            <Login loginSubmit={this.loginSubmit} status={loggedIn} createNewAccount={this.createNewAccount} />
+            <Login loginSubmit={this.loginSubmit} failureMessage={failureMessage} createNewAccount={this.createNewAccount} />
           }
 
 
