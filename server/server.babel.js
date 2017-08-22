@@ -91,20 +91,20 @@ app.post('/login/:username/:password', (req, res) => {
 })
 
 // client creates account
-app.post('/createNewAccount/:username/:password', (req, res) => {
-  const { username, password } = req.params;
-  console.log('create account', username, password)
+app.post('/createNewAccount/:username/:password/:region/:summonerName', (req, res) => {
+  const { username, password, region, summonerName } = req.params;
+  console.log('create account', username, password, region, summonerName)
 
   fb.auth().createUserWithEmailAndPassword(username, password)
     .then(user => {
       console.log('account created', username, user)
+      
+      //create user in FB
+
       res.send({loggedIn: true, user})
     }, (error) => {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-
-      console.log('create account error', error.code, error.message)
+      const { code, message } = error;
+      console.log('create account error', code, message)
       res.send(error)
     });
 })
@@ -240,7 +240,7 @@ app.get('/visitorCount', (req, res) => {
     .catch(err => console.log(err));
 });
 
-let port = process.env.PORT || 9000;
+let port = process.env.PORT || 3000;
 
 app.listen(port);
 console.log('app listening on ' + port);
