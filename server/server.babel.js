@@ -229,7 +229,7 @@ app.post('/youtube', (req, res) => {
 });
 
 app.get('/riot.txt', (req, res) => {
-  res.send('11ebdc3c-c815-4533-b331-55e5434144df')
+  res.send('5741bdf2-f1e6-4c6e-923a-9dd6ac9a54c6')
 })
 
 app.get('/visitorCount', (req, res) => {
