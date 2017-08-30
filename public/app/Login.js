@@ -5,7 +5,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
   
-    this.state = { username: '', password: '' };
+    this.state = { email: '', password: '' };
   }
 
   handleChange = ({target: {name, value}}) => {
@@ -21,29 +21,30 @@ class Login extends Component {
   handleCreateNewAccount = (e) => {
     e.preventDefault(); 
     console.log('login create');
-    this.props.createNewAccount(this.state);
+    // this.props.createNewAccount(this.state);
+    this.props.openModal('createNewAccount', this.state);
   }
 
   render() {
-    const { loggedIn, failureMessage } = this.props;
-    const { username, password } = this.state;
+    const { loggedIn, failureMessage, openModal } = this.props;
+    const { email, password } = this.state;
 
     return(
       <Form 
         success={loggedIn} 
         error={!!failureMessage} 
         size='mini' 
-        onSubmit={this.handleSubmit.bind(this)} 
+        onSubmit={this.handleSubmit} 
         method='post' 
         style={{position: 'absolute', width: 210, height: 100, top: 10, right: 10, zIndex: 7}}
       >
 
         <div className='inline'>
           <Form.Field>
-            <input placeholder='Email' name='username' value={username} onChange={this.handleChange.bind(this)} style={{padding: '3px 10px'}}/>
+            <input placeholder='Email' name='email' value={email} onChange={this.handleChange} style={{padding: '3px 10px'}}/>
           </Form.Field>
           <Form.Field>
-            <input type='password' size='mini' placeholder='Password' name='password' value={password} onChange={this.handleChange.bind(this)} style={{padding: '3px 10px'}}/>
+            <input type='password' size='mini' placeholder='Password' name='password' value={password} onChange={this.handleChange} style={{padding: '3px 10px'}}/>
           </Form.Field>
         </div>
 

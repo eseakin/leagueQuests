@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
 import QuestContainer from './QuestContainer';
-import { Image, Icon, Modal } from 'semantic-ui-react'
+import { Image, Icon, Modal, Button, Message, Card } from 'semantic-ui-react'
 import Login from './Login';
+import CreateAccount from './CreateAccount';
+import { regionDescriptions } from './Options';
+
 
 class App extends Component {
   constructor(props) {
@@ -16,38 +19,31 @@ class App extends Component {
       activeView: 'quests',
       backgroundUrl: 'http://cdn.leagueoflegends.com/lolkit/1.1.6/resources/images/bg-default.jpg',
       loggedIn: false,
-      showModal: false
+      summonerName: '',
+      profileIconId: '',
+      region: '',
+      showModal: false,
+      modalContents: '',
+      failureMessage: '',
     };
   }
 
-  componentDidMount() {
+  componentWillMount = () => {
+    this.updateDimensions();
+  }
+
+  componentDidMount = () => {
     window.addEventListener("resize", this.updateDimensions);
 
-    if(window.location.host != 'localhost:9000') {
+    if(window.location.host != 'localhost:3000') {
       axios.get('/visitorCount')
       .then((res) => true)
       .catch((error) => console.log(error));
     }
-
-    // this.getSummonerData('NA1', 'label out');
   }
 
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     window.removeEventListener("resize", this.updateDimensions);
-  }
-
-  componentWillMount() {
-    this.updateDimensions();
-
-    // axios.get('/champData')
-    // .then((res) => {
-    //     // console.log('componentWillMount', res.data)
-    //     this.setState({
-    //       champData: res.data,
-    //       champsDisplayed: res.data.data
-    //     });
-    //   })
-    // .catch((err) => console.log(err));
   }
 
   updateDimensions = () => {
@@ -64,69 +60,122 @@ class App extends Component {
   }
 
   createNewAccount = (data) => {
-    this.setState({status: ''})
-    let { username, password } = data;
-    console.log('app create account', username, password)
+    this.setState({failureMessage: ''})
+    let { email, password, summonerName, region } = data;
+    console.log('app create account', email, password)
 
-    if(!username || !password) {
-      this.setState({failureMessage: 'Enter a username and password'});
+    if(!email || !password || !summonerName || !password) {
+      this.setState({failureMessage: 'Please fill out the form'});
       return;
     }
 
-    axios.post(`/createNewAccount/${username}/${password}`)
-      .then((response) => {
-          if(!response.data.message) {
-            console.log('success', response.data)
-            this.setState({loggedIn: true, user: response.data});
+    const payload = {
+      email,
+      password,
+      summonerName,
+      region
+    }
+
+    axios.post('/createNewAccount', payload)
+      .then((res) => {
+     
+          if(!res.data.message) {
+            console.log('success', res.data)
+
+            const { loggedIn, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests } = res.data.info;
+            const { user } = res.data;
+            const userId = user.uid;
+
+            this.setState({ loggedIn, user, userId, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests, modalSuccess: 'Success' });
+            this.modalSuccess();
           } else {
-            console.log('fail', response.data.message)
-            this.setState({failureMessage: response.data.message})
+            console.log('fail', res.data.message)
+            this.setState({failureMessage: res.data.message})
           }
       })
       .catch((error) => console.log(error));
   }
 
   loginSubmit = (data) => {
-    this.setState({status: ''})
-    let { username, password } = data;
+    this.setState({loginFailureMessage: ''})
+    let { email, password } = data;
 
     // DEV ONLY
-    username = '2@2.com';
-    password = '123456';
 
-    console.log('app submit', username, password)
+    console.log('app login', email)
 
-    if(!username || !password) {
-      this.setState({failureMessage: 'Enter a username and password'});
+    if(!email || !password) {
+      this.setState({loginFailureMessage: 'Please enter an email and password'});
       return;
     }
 
-    // this.getSummonerData('NA1', username);
+    // this.getSummonerData('NA1', email);
 
-    axios.post(`/login/${username}/${password}`)
-      .then((response) => {
-          if(response.data.loggedIn) {
-            console.log('successful login', username)
-            this.setState({loggedIn: true, userId: response.data.uid});
+    axios.post('/login', {email, password})
+      .then((res) => {
+        console.log('success', res.data)
+
+        if(res.data.info.loggedIn) {
+          const { loggedIn, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests } = res.data.info;
+          const { user } = res.data;
+          const userId = user.uid;
+          console.log('successful login', userId)
+          this.setState({ loggedIn, user, userId, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests });
+        } else {
+          this.setState({loginFailureMessage: res.data.message});
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+
+  logOutSubmit = () => {
+    axios.post('/logOut')
+      .then((res) => {
+        console.log('log out', res.data)
+          const {loggedIn} = res.data;
+          
+          if(!loggedIn) {
+            console.log('successful log out');
+            this.setState({loggedIn: false, userId: null, user: null, summonerName: null, profileIconId: null});
           } else {
-            this.setState({failureMessage: response.data.message});
+            this.setState({loginFailureMessage: res.data.message});
           }
       })
       .catch((error) => console.log(error));
   }
 
-  getSummonerData = (region, summonerName) => {
+  getSummonerInfo = (region, summonerName) => {
     // summonerName = 'escape goat'
-    axios.get(`summonerData/${region}/${summonerName}`)
+    axios.get(`summonerInfo/${region}/${summonerName}`)
     .then((res) => {
-        console.log('summonerData', res.data)
+        console.log('summonerInfo', res.data)
         const { accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests } = res.data
-        this.setState({ accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests, loggedIn: true });
+        this.setState({ accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests });
       })
     .catch((err) => console.log(err));
   }
 
-  
+  openModal = (type, data) => {
+    switch(type) {
+
+      case undefined:
+        return null;
+
+      case 'createNewAccount':
+        const {email, password} = data;
+        let modalContents = <CreateAccount closeModal={this.closeModal} onSubmit={this.createNewAccount} email={email} password={password}/>
+        this.setState({ modalContents, showModal: true, failureMessage: '' });
+        return
+    }
+  }
+
+  closeModal = () => {
+    this.setState({ showModal: false, failureMessage: '' });
+  }
+
+  modalSuccess = () => {
+    setTimeout(() => this.setState({modalSuccess: '', showModal: false}), 1500);
+  }
 
   render = () => {
     // console.log('render')
@@ -144,7 +193,11 @@ class App extends Component {
       questStart,
       userQuests,
       loggedIn,
-      failureMessage
+      loginFailureMessage,
+      failureMessage,
+      showModal,
+      modalContents,
+      modalSuccess
        } = this.state;
 
     const version = '7.16.1'   
@@ -153,21 +206,59 @@ class App extends Component {
     const iconPath = 'http://ddragon.leagueoflegends.com/cdn/' + version + '/img/champion/';
     const skinPath = 'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/';
     const splashPath = 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/';
-    console.log(profileIconId)
+    // console.log(profileIconId)
 
     return (
       <div className="App" style={{height: windowHeight}}>
         <div className="App-header">
           <img src="../leagueQuests.png" alt="Welcome to League Skins"/>
 
-          {!loggedIn &&
-            <Login loginSubmit={this.loginSubmit} failureMessage={failureMessage} createNewAccount={this.createNewAccount} />
+          {!loggedIn && <Login loginSubmit={this.loginSubmit} failureMessage={loginFailureMessage} openModal={this.openModal} />}
+
+          {loggedIn && 
+            <div style={{width: 150, float: 'right', margin: 15}}>
+              <div style={{textAlign: 'left'}}>
+                {profileIconId && <Image src={`http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/${profileIconId}.png`} floated='right' size='mini' />}
+                {!profileIconId && <Icon size='big' name='question' style={{float: 'right', border: '1px solid green', borderRadius: 2, color: '#ddd', marginTop: 5}} />}
+                
+                <div style={{fontSize: 16}}>
+                  {summonerName}
+                </div>
+                <div style={{color: '#aaa'}}>
+                  {regionDescriptions[region]}
+                </div>
+              </div>
+
+              <div style={{float: 'right', marginTop: 10}}>
+                  {false && <Button basic compact color='green' size='mini' icon='setting' />}
+                  <Button basic compact color='green' size='mini' onClick={this.logOutSubmit}>Log out</Button>
+              </div>
+            </div>
           }
 
-
-          <p style={{color: 'white', float: 'right', marginRight: 10}}>{summonerName}</p>
-          {profileIconId && <Image src={`http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/${profileIconId}.png`} style={{float: 'right', width: 50}}/>}
+          
         </div>
+
+        <Modal open={showModal} onClose={this.closeModal} size='small'>
+          {modalContents}
+
+          {failureMessage && 
+            <Modal.Content style={{textAlign: 'center'}}>
+              <Message error compact content={failureMessage}/>
+            </Modal.Content>
+          }
+
+          {modalSuccess && 
+            <Modal.Content style={{textAlign: 'center'}}>
+              <Message success compact>
+                <Message.Content>
+                  {modalSuccess}
+                  <Icon name='checkmark' />
+                </Message.Content>
+              </Message>
+            </Modal.Content>
+          }
+        </Modal>
 
         <QuestContainer 
           summonerName={summonerName} 

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Image, Card, Icon, Button } from 'semantic-ui-react';
 
-
 class CurrentQuestCard extends Component {
   constructor(props) {
     super(props);
@@ -35,7 +34,6 @@ class CurrentQuestCard extends Component {
   render() {
     const { scrollY, completion } = this.state;
     const { selectedQuest, activeQuest, beginQuest, completeQuest, handleDescription, handleCompletion } = this.props;
-
     const style = {
       div: {
         background: 'transparent',
