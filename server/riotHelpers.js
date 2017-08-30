@@ -6,8 +6,18 @@ const getSummonerInfoFromRiot = (region, summonerName) => {
 
   return axios.get(route)
     .then((response) => {
-      console.log('summonerInfo', response.data)
-      return response.data;
+
+      const { id, accountId, name, profileIconId } = response.data;
+      const info = {
+        accountId,
+        profileIconId,
+        region,
+        summonerId: id,
+        summonerName: name,
+      };
+      
+      console.log('getSummonerInfoFromRiot', info)
+      return info;
     })
     .catch((error) => {
       console.log(error);
@@ -17,9 +27,35 @@ const getSummonerInfoFromRiot = (region, summonerName) => {
 
 const saveSummonerInfo = (info, db) => {
   const { region, summonerName } = info;
+  console.log('saveSummonerInfo', info)
 
-  return db.ref(`users/${region}/${summonerName.toUpperCase()}`).set(info)
-    .then((response) => console.log('saved', response))
+  return db.ref(`/summonerInfo/${region}/${summonerName.toUpperCase()}`).set(info)
+    .then(() => console.log('saved'))
+    .catch((error) => {
+      console.log(error);
+      return error;
+    });
+}
+
+const getSummonerInfo = (db, params) => {
+  const { region, summonerName } = params;
+
+  return db.ref(`/summonerInfo/${region}/${summonerName.toUpperCase()}`).once('value')
+    .then((snap) => {
+      if(snap.val())
+        return snap.val();
+      else {
+        return getSummonerInfoFromRiot(region, summonerName)
+          .then((info) => {
+            return saveSummonerInfo(info, db)
+              .then(() => info)
+          })
+          .catch((error) => {
+            console.log(error);
+            return error;
+          });
+      }
+    })
     .catch((error) => {
       console.log(error);
       return error;
@@ -79,6 +115,7 @@ const getChampDataFromRiot = function(db) {
 export {
   getSummonerInfoFromRiot,
   saveSummonerInfo,
+  getSummonerInfo,
   getRecentMatches,
   getMatchByGameId,
   getChampDataFromRiot,

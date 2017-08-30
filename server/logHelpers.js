@@ -1,7 +1,7 @@
 
 const logAndSend = (res, data, message) => {
-  console.log(message)
-  res.send(data)
+  console.log(message, data)
+  res.send({data, message})
 }
 
 

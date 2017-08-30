@@ -9,7 +9,7 @@ import _ from 'lodash';
 const { stubQuestList } = require('../public/stubs/quests');
 const { beginQuest, completeQuest, saveQuestsToDb } = require('./questHelpers');
 const { getSummonerInfoFromRiot, saveSummonerInfo, getRecentMatches, getMatchByGameId, getChampDataFromRiot } = require('./riotHelpers');
-const {  } = require('./userHelpers');
+const { createNewAccount, logIn, logOut } = require('./userHelpers');
 const { resetStubUserData } = require('./stubHelpers');
 const { logAndSend } = require('./logHelpers');
 
@@ -33,11 +33,12 @@ const config = {
 
 fb.initializeApp(config);
 const db = fb.database();
+const auth = fb.auth();
 
 //fb testing
-app.get('/config', (req, res) => {
-  res.send(config);
-})
+// app.get('/config', (req, res) => {
+//   res.send(config);
+// })
 
 
 
@@ -72,75 +73,51 @@ db.ref('/champData').once('value')
   .catch((error) => console.log(error)); 
 
 
+// client creates account
+app.post('/createNewAccount', (req, res) => {
+  createNewAccount(req.body, auth, db)
+    .then((accountInfo) => res.send(accountInfo))
+    .catch((err) => logAndSend(res, err, 'create account failed'))
+
+
+})
+
+
 // client logs in
-app.post('/login/:username/:password', (req, res) => {
-  const { username, password } = req.params;
-  console.log('login received', username, password)
-  fb.auth().signInWithEmailAndPassword(username, password)
+app.post('/login', (req, res) => {
+  console.log('login received', req.body)
+  logIn(auth, db, req.body)
+    .then((response) => res.send(response))
+    .catch((err) => logAndSend(res, err, 'create account failed'))
+})
+
+
+// client logs out
+app.post('/logOut', (req, res) => {
+  console.log('logout received')
+  fb.auth().signOut()
     .then(
-      (user) => {
-        console.log('logged in', username, user)
-        res.send({ loggedIn: true, user })
+      (response) => {
+        console.log('logged out')
+
+        const success = { loggedIn: false }
+        res.send(success)
       }, 
       (err) => {
-        console.log('login fail', username, err.message)
-        const failed = { loggedIn: false, message: err.message }
+        console.log('log out fail', err.code, err.message)
+
+        const failed = { loggedIn: true, message: err.message }
         res.send(failed)
       }
   );
 })
 
-// client creates account
-app.post('/createNewAccount/:username/:password/:region/:summonerName', (req, res) => {
-  const { username, password, region, summonerName } = req.params;
-  console.log('create account', username, password, region, summonerName)
-
-  fb.auth().createUserWithEmailAndPassword(username, password)
-    .then(user => {
-      console.log('account created', username, user)
-      
-      //create user in FB
-
-      res.send({loggedIn: true, user})
-    }, (error) => {
-      const { code, message } = error;
-      console.log('create account error', code, message)
-      res.send(error)
-    });
-})
-
 
 // get summoner info
-app.get('/summonerData/:region/:summonerName', (req, res) => {
-  const { region, summonerName } = req.params;
-
-  db.ref(`users/${region}/${summonerName.toUpperCase()}`).once('value')
-  .then((snap) => {
-    // summoner was in db
-    if(snap.val())
-      res.send(snap.val())
-
-    // pull summoner from riot
-    else {
-      getSummonerInfoFromRiot(region, summonerName)
-        .then((response) => {
-          const { id, accountId, name, profileIconId } = response;
-          const info = {
-            accountId,
-            profileIconId,
-            region,
-            summonerId: id,
-            summonerName: name,
-          };
-
-          saveSummonerInfo(info, db)
-            .then((response) => res.send(info))
-            .catch((error) => console.log(error)); 
-        })
-        .catch((error) => console.log(error)); 
-    }
-  })
-  .catch((error) => console.log(error)); 
+app.get('/summonerInfo/:region/:summonerName', (req, res) => {
+  getSummonerInfo(db, req.params)
+    .then((info) => res.send(info))
+    .catch((error) => console.log(error)); 
 });
 
 
@@ -165,7 +142,7 @@ app.get('/champData', (req, res) => {
 app.get('/beginQuest/:region/:summonerName/:currentQuestId', (req, res) => {
   const { region, summonerName, currentQuestId } = req.params;
 
-  db.ref(`users/${region}/${summonerName.toUpperCase()}`).once('value')
+  db.ref(`summonerInfo/${region}/${summonerName.toUpperCase()}`).once('value')
   .then((snap) => {
 
     if(snap.val()) {
@@ -174,7 +151,7 @@ app.get('/beginQuest/:region/:summonerName/:currentQuestId', (req, res) => {
         currentQuestId
       };
 
-      db.ref(`/users/${region}/${summonerName.toUpperCase()}`).update(user)
+      db.ref(`/summonerInfo/${region}/${summonerName.toUpperCase()}`).update(user)
         .then(() => res.send(`${summonerName} started quest ${currentQuestId} at ${user.questStart}`))
         .catch((error) => console.log(error));
 
