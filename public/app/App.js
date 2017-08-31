@@ -137,7 +137,7 @@ class App extends Component {
           
           if(!loggedIn) {
             console.log('successful log out');
-            this.setState({loggedIn: false, userId: null, user: null, summonerName: null, profileIconId: null});
+            this.setState({loggedIn: false, userId: null, user: null, userQuests: null, summonerName: null, profileIconId: null, questStart: null, currentQuestId: null, accountId: null, region: null });
           } else {
             this.setState({loginFailureMessage: res.data.message});
           }

@@ -37,7 +37,7 @@ const completeQuest = (params, db, questList, dbRef) => {
           return getMatchByGameId(region, response.data.matches[0].gameId)
             .then((matchInfo) => {
               // console.log('match info retrieved', matchInfo.data)
-              return checkQuestCompletion(matchInfo.data, summonerName, user, questList, db)
+              return checkQuestCompletion(matchInfo.data, summonerName, user, questList, db, dbRef)
               .then((result) => result)
               .catch((error) => console.log(error));
             })
@@ -58,7 +58,7 @@ const completeQuest = (params, db, questList, dbRef) => {
     .catch((error) => console.log(error));
 }
 
-const checkQuestCompletion = (matchInfo, summonerName, user, questList, db) => {
+const checkQuestCompletion = (matchInfo, summonerName, user, questList, db, dbRef) => {
   // quest must be started within 5 min of game start
   // if(parseInt(matchInfo.gameCreation) + 5 * 60 * 60 * 1000 < user.questStart)
   //   return 'Quest started too late: ' + matchInfo.gameCreation + ' ' + user.questStart
@@ -91,12 +91,12 @@ const checkQuestCompletion = (matchInfo, summonerName, user, questList, db) => {
       return 'not implemented yet'
   });
 
-  return checkPriorQuestCompletion(result, db);
+  // console.log('quest results', result)
+
+  return checkPriorQuestCompletion(result, db, dbRef);
 }
 
 const matchInfoPathParser = (path, matchInfo, user) => {
-  // path = 'participants/$participantIndex/stats/assists'
-
   path = path.split('/');
   let result = Object.assign({}, matchInfo);
 
@@ -110,7 +110,7 @@ const matchInfoPathParser = (path, matchInfo, user) => {
   return result;
 }
 
-const checkPriorQuestCompletion = (result, db) => {
+const checkPriorQuestCompletion = (result, db, dbRef) => {
   let priorResults = 0;
   if(result.user.userQuests && result.user.userQuests[result.user.currentQuestId])
     priorResults = result.user.userQuests[result.user.currentQuestId].completion;
@@ -124,7 +124,7 @@ const checkPriorQuestCompletion = (result, db) => {
       result.time = new Date().getTime();
       console.log('compare', priorResults, completion)
 
-      if(priorResults < completion) {
+      if(completion > priorResults) {
         result.message = 'Quest Success!'
         result.isComplete = true;
         const update = {};
@@ -133,8 +133,8 @@ const checkPriorQuestCompletion = (result, db) => {
         update[`userQuests/${result.questId}/time`] = result.time;
         update[`userQuests/${result.questId}/best`] = result.userData;
 
-        return db.ref(`/users/${result.user.region}/${result.user.summonerName.toUpperCase()}`).update(update)
-          .then((snap) => result)
+        return dbRef.update(update)
+          .then(() => result)
           .catch((error) => console.log(error));
       } else {
         result.isComplete = false;

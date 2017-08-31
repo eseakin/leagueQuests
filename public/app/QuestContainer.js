@@ -31,6 +31,8 @@ class QuestContainer extends Component {
         return Object.assign({}, quest, nextProps.userQuests[i]);
       })
       this.setState({questList: newQuestList})
+    } else if(nextProps.userQuests === null) {
+      this.getQuests();
     }
 
     if(nextProps.currentQuestId && this.state.questList)
@@ -42,6 +44,7 @@ class QuestContainer extends Component {
   }
 
   getQuests = () => {
+    console.log('getting quests')
     axios.get('/quests')
       .then((response) => {
         const { quests, questCards } = response.data;

@@ -62,7 +62,7 @@ const getSummonerInfo = (db, params) => {
     });
 }
 
-const getRecentMatches = (region, accountId) => {
+const getRecentMatches = (region, accountId, dbRef) => {
   const route = `https://${region.toLowerCase()}.api.riotgames.com/lol/match/v3/matchlists/by-account/${accountId}/recent?api_key=${process.env.RIOT_API_KEY}`
 
   return axios.get(route)
@@ -73,9 +73,9 @@ const getRecentMatches = (region, accountId) => {
     });
 }
 
-const getMatchByGameId = (region, gameId) => {
+const getMatchByGameId = (region, gameId, dbRef) => {
   const route = `https://${region.toLowerCase()}.api.riotgames.com/lol/match/v3/matches/${gameId}?api_key=${process.env.RIOT_API_KEY}`
-  
+  console.log('matchid', gameId)
   return axios.get(route)
     .then((response) => response)
     .catch((error) => {

@@ -135,7 +135,7 @@ const quests = [
         type: 'more than',
         displayValues: [100, 200, 300],
         values: [100, 200, 300],
-        path: 'participants/$participantIndex/stats/totalTimeCrowdControlDealt'
+        path: 'participants/$participantIndex/stats/timeCCingOthers'
       }
     ],
   },
@@ -208,7 +208,7 @@ const quests = [
   {
     id: 9,
     name: 'Dragon Slayer',
-    description: 'Kill $ / $ / $ dragons in a single game',
+    description: 'As a team, kill $ / $ / $ dragons in a single game',
     // category: ,
     completion: 0,
     startedTimestamp: null,
@@ -230,7 +230,7 @@ const quests = [
   {
     id: 10,
     name: 'Hella Buff',
-    description: 'Get $ / $ / $ in a single game',
+    description: 'As a team, get $ / $ / $ in a single game',
     // category: ,
     completion: 0,
     startedTimestamp: null,
@@ -254,7 +254,7 @@ const quests = [
   {
     id: 11,
     name: 'Flat Earth Society',
-    description: 'Flatten all but $ / $ / $ enemy turrets in a single game',
+    description: 'Flatten $ / $ / $ enemy turrets in a single game',
     // category: ,
     completion: 0,
     startedTimestamp: null,
@@ -267,7 +267,7 @@ const quests = [
     requirements: [
       {
         type: 'more than',
-        displayValues: [4, 2, 0],
+        displayValues: [7, 9, 'all'],
         values: [7, 9, 11],
         path: 'teams/$team/towerKills'
       }
@@ -631,7 +631,7 @@ const quests = [
   {
     id: 27,
     name: 'Un-Inhibited',
-    description: 'Team kill $ / $ / $ enemy inhibitors in a single game',
+    description: 'As a team, kill $ / $ / $ enemy inhibitors in a single game',
     // category: ,
     completion: 0,
     startedTimestamp: null,
@@ -653,7 +653,7 @@ const quests = [
   {
     id: 28,
     name: 'What Lies Beneath',
-    description: 'Team kill $ / $ / $ Baron Nashors in a single game',
+    description: 'As a team, kill Baron Nashor $ / $ / $ times in a single game',
     // category: ,
     completion: 0,
     startedTimestamp: null,
@@ -666,8 +666,8 @@ const quests = [
     requirements: [
       {
         type: 'more than',
-        displayValues: [2, 3, 4],
-        values: [2, 3, 4],
+        displayValues: [1, 2, 3],
+        values: [1, 2, 3],
         path: 'teams/$team/baronKills'
       }
     ],
@@ -678,7 +678,7 @@ const tristanasQuests = {
   cardTitle: 'Tristana\'s Buckaneers',
   cardBackground: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Tristana_6.jpg',
   cardColor: '#1f1f3d',
-  quests: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11]
+  quests: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11]
 }
 
 const nocturnesQuests = {
