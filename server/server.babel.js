@@ -11,7 +11,7 @@ const { beginQuest, completeQuest, saveQuestsToDb } = require('./questHelpers');
 const { getSummonerInfoFromRiot, saveSummonerInfo, getRecentMatches, getMatchByGameId, getChampDataFromRiot } = require('./riotHelpers');
 const { createNewAccount, logIn, logOut } = require('./userHelpers');
 const { resetStubUserData } = require('./stubHelpers');
-const { logAndSend } = require('./logHelpers');
+const { log, logAndSend } = require('./logHelpers');
 
 const app = express();
 
@@ -63,24 +63,22 @@ db.ref('/quests/quests').once('value')
     console.log('quest list retrieved')
     questList = snap.val()
   })
-  .catch((err) => console.log(err)); 
+  .catch((err) => log(err, 'loading quests')); 
 
 db.ref('/champData').once('value')
   .then((snap) => {
     console.log('champ data retrieved')
     champData = snap.val().data
   })
-  .catch((err) => console.log(err)); 
+  .catch((err) => log(err, 'loading champ data')); 
 
 
 // client creates account
 app.post('/createNewAccount', (req, res) => {
   createNewAccount(req.body, auth, db)
     .then((accountInfo) => res.send(accountInfo))
-    .catch((err) => logAndSend(res, err, 'create account failed'))
-
-
-})
+    .catch((err) => logAndSend(res, err, 'create account'));
+});
 
 
 // client logs in
@@ -88,36 +86,35 @@ app.post('/login', (req, res) => {
   console.log('login received', req.body)
   logIn(auth, db, req.body)
     .then((response) => res.send(response))
-    .catch((err) => logAndSend(res, err, 'login failed'))
-})
+    .catch((err) => logAndSend(res, err, 'login'));
+});
 
 
 // client logs out
 app.post('/logOut', (req, res) => {
   console.log('logout received')
   fb.auth().signOut()
-    .then(
-      (response) => {
-        console.log('logged out')
+    .then((response) => {
+        console.log('logged out');
 
-        const success = { loggedIn: false }
-        res.send(success)
+        const success = { loggedIn: false };
+        res.send(success);
       }, 
       (err) => {
-        console.log('log out fail', err.code, err.message)
+        log(err, 'logout')
 
-        const failed = { loggedIn: true, message: err.message }
-        res.send(failed)
+        const failed = { loggedIn: true, message: err.message };
+        res.send(failed);
       }
   );
-})
+});
 
 
 // get summoner info
 app.get('/summonerInfo/:region/:summonerName', (req, res) => {
   getSummonerInfo(db, req.params)
     .then((info) => res.send(info))
-    .catch((err) => console.log(err)); 
+    .catch((err) => logAndSend(res, err, 'getSummonerInfo')); 
 });
 
 
@@ -127,7 +124,7 @@ app.get('/quests', (req, res) => {
 
   db.ref('/quests').once('value')
     .then((snap) => res.send(snap.val()))
-    .catch((err) => console.log(err));
+    .catch((err) => log(err, 'getting quests'));
 });
 
 // Client pulls champion data
@@ -135,7 +132,7 @@ app.get('/champData', (req, res) => {
   console.log('champData');
   db.ref('/champData').once('value')
     .then(snap => res.send(snap.val()))
-    .catch(err => console.log(err));
+    .catch(err => logAndSend(res, err, 'client pulling champ data'));
 });
 
 // Client begins quest
@@ -153,7 +150,7 @@ app.get('/beginPublicQuest/:region/:summonerName/:currentQuestId', (req, res) =>
 
       db.ref(`/summonerInfo/${region}/${summonerName.toUpperCase()}`).update(questInfo)
         .then(() => res.send(`${summonerName} started quest ${currentQuestId} at ${questInfo.questStart}`))
-        .catch((err) => console.log(err));
+        .catch((err) => logAndSend(res, err, 'getSummonerInfo from db')); 
 
     } else {
       getSummonerInfoFromRiot(region, summonerName)
@@ -173,9 +170,9 @@ app.get('/beginPublicQuest/:region/:summonerName/:currentQuestId', (req, res) =>
             .then((response) => {
               res.send(`${summonerName} started quest ${currentQuestId} at ${info.questStart}`);
             })
-            .catch((err) => console.log(err)); 
+            .catch((err) => logAndSend(res, err, 'saveSummonerInfo')); 
         })
-        .catch((err) => console.log(err)); 
+        .catch((err) => logAndSend(res, err, 'getSummonerInfoFromRiot')); 
     }
   });
 
@@ -199,7 +196,7 @@ app.get('/beginPrivateQuest/:userId/:currentQuestId', (req, res) => {
 
     db.ref(`registeredUsers/${userId}`).update(questInfo)
       .then(() => res.send(`${user.summonerName} started quest ${currentQuestId} at ${questInfo.questStart}`))
-      .catch((err) => logAndSend(res, err, 'start quest failed'))
+      .catch((err) => logAndSend(res, err, 'starting quest'))
   });
 
   // beginQuest(req.params, res, db);
@@ -213,7 +210,7 @@ app.get('/completePublicQuest/:region/:summonerName', (req, res) => {
 
   completeQuest(req.params, db, questList, dbRef)
     .then((result) => res.send(result))
-    .catch((err) => console.log(err)); 
+    .catch((err) => logAndSend(res, err, 'completing public quest')); 
 });
 
 app.get('/completePrivateQuest/:userId', (req, res) => {
@@ -222,7 +219,7 @@ app.get('/completePrivateQuest/:userId', (req, res) => {
 
   completeQuest(req.params, db, questList, dbRef)
     .then((result) => res.send(result))
-    .catch((err) => console.log(err)); 
+    .catch((err) => logAndSend(res, err, 'completing private quest')); 
 });
 
 
@@ -242,14 +239,14 @@ app.post('/youtube', (req, res) => {
 
 app.get('/riot.txt', (req, res) => {
   res.send('5741bdf2-f1e6-4c6e-923a-9dd6ac9a54c6')
-})
+});
 
 app.get('/visitorCount', (req, res) => {
   db.ref('/visitorCount').transaction((count) => {
     count = count || 0;
     return count + 1;
   }).then(() => res.send())
-    .catch(err => console.log(err));
+    .catch(err => logAndSend(res, err, 'visitor count')); 
 });
 
 let port = process.env.PORT || 3000;

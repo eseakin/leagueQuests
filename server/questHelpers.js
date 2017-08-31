@@ -1,27 +1,28 @@
 const axios = require('axios');
 const { getSummonerInfoFromRiot, getRecentMatches, getMatchByGameId, } = require('./riotHelpers');
+const { log, logAndSend } = require('./logHelpers');
 import _ from 'lodash';
 
-const beginQuest = (params, db) => {
-  const { region, summonerName, currentQuestId } = params;
+// const beginQuest = (params, db) => {
+//   const { region, summonerName, currentQuestId } = params;
 
-  return db.ref(`/users/${region}/${summonerName.toUpperCase()}`).once('value')
-  .then((snap) => {
-    let user = snap.val();
+//   return db.ref(`/users/${region}/${summonerName.toUpperCase()}`).once('value')
+//   .then((snap) => {
+//     let user = snap.val();
     
-    console.log('user', user)
-    user.currentQuestId = currentQuestId;
-    user.questStart = new Date().getTime();
-    const update = Object.assign({}, user);
+//     console.log('user', user)
+//     user.currentQuestId = currentQuestId;
+//     user.questStart = new Date().getTime();
+//     const update = Object.assign({}, user);
 
-    db.ref(`/users/${region}/${summonerName.toUpperCase()}`).update(update)
-      .then(() => `${summonerName} started quest ${currentQuestId} at ${user.questStart}`)
-      .catch((error) => console.log(error));
+//     db.ref(`/users/${region}/${summonerName.toUpperCase()}`).update(update)
+//       .then(() => `${summonerName} started quest ${currentQuestId} at ${user.questStart}`)
+//       .catch((err) => log(err, 'updating user in database'));
     
 
-  })
-  .catch((error) => console.log(error));
-}
+//   })
+//   .catch((err) => console.log(err));
+// }
 
 const completeQuest = (params, db, questList, dbRef) => {
 
@@ -39,23 +40,13 @@ const completeQuest = (params, db, questList, dbRef) => {
               // console.log('match info retrieved', matchInfo.data)
               return checkQuestCompletion(matchInfo.data, summonerName, user, questList, db, dbRef)
               .then((result) => result)
-              .catch((error) => console.log(error));
+              .catch((err) => log(err, 'checking quest completion'));
             })
-            .catch((error) => console.log(error));
+            .catch((err) => log(err, 'getting match info from Riot'));
         })
-        .catch((error) => console.log(error));
-
-      //TESTING ONLY***************
-      // db.ref('/stubData/matchInfo').once('value')
-      //   .then(matchInfo => {
-          // checkQuestCompletion(matchInfo.val(), summonerName, user)
-          // .then((result) => res.send(result))
-          // .catch((error) => console.log(error));
-      //   })
-      //   .catch(err => console.log(err));
-      //***************************
+        .catch((err) => log(err, 'getting recent matches from Riot'));
     })
-    .catch((error) => console.log(error));
+    .catch((err) => log(err, 'getting user info'));
 }
 
 const checkQuestCompletion = (matchInfo, summonerName, user, questList, db, dbRef) => {
@@ -135,23 +126,23 @@ const checkPriorQuestCompletion = (result, db, dbRef) => {
 
         return dbRef.update(update)
           .then(() => result)
-          .catch((error) => console.log(error));
+          .catch((err) => log(err, 'updating quest completion'));
       } else {
         result.isComplete = false;
         result.message = 'Quest failed'
         return new Promise((resolve, reject) => resolve(result));
       }
     })
-    .catch(err => console.log(err));
+    .catch((err) => log(err, 'getting champ data from database'));
 }
 
 
 const saveQuestsToDb = (quests, db) => {
-  return db.ref('/quests').set(quests).then((response) => console.log('quests saved')).catch((error) => console.log(error)); 
+  return db.ref('/quests').set(quests).then((response) => console.log('quests saved')).catch((err) => log(err, 'saving quests to database'));
 }
 
 export {
-  beginQuest,
+  // beginQuest,
   completeQuest,
   saveQuestsToDb
 }

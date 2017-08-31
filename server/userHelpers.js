@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { getSummonerInfoFromRiot, saveSummonerInfo, getSummonerInfo, getRecentMatches, getMatchByGameId, getChampDataFromRiot } = require('./riotHelpers');
+const { log, logAndSend } = require('./logHelpers');
 
 const createNewAccount = (data, auth, db) => {
   const { email, password, region, summonerName } = data;
@@ -24,21 +25,11 @@ const createNewAccount = (data, auth, db) => {
             .then(() => {
               return { user, info: data }
             })
-            .catch((error) => {
-              console.log(error);
-              return error;
-            });
+            .catch((err) => log(err, 'setting account info in database'));
         })
-        .catch((error) => {
-          console.log(error);
-          return error;
-        });
+        .catch((err) => log(err, 'getting summoner info'));
 
-      }, (error) => {
-        const { code, message } = error;
-        console.log('create account error', code, message)
-        return error
-      });
+      }, (err) => log(err, 'creating account'));
 
 }
 
@@ -56,6 +47,7 @@ const logIn = (auth, db, params) => {
 
           return { info, user }
         })
+        .catch((err) => log(err, 'getting summoner info from Riot'));
     }, 
     (err) => {
       console.log('login fail', email, err.code, err.message)

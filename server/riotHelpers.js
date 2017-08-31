@@ -1,5 +1,6 @@
 const axios = require('axios');
 const hasher = require('object-hash');
+const { log, logAndSend } = require('./logHelpers');
 
 const getSummonerInfoFromRiot = (region, summonerName) => {
   const route = `https://${region.toLowerCase()}.api.riotgames.com/lol/summoner/v3/summoners/by-name/${summonerName}?api_key=${process.env.RIOT_API_KEY}`;
@@ -19,10 +20,7 @@ const getSummonerInfoFromRiot = (region, summonerName) => {
       console.log('getSummonerInfoFromRiot', info)
       return info;
     })
-    .catch((error) => {
-      console.log(error);
-      return error;
-    });
+    .catch((err) => log(err, 'getting summoner info from Riot'));
 }
 
 const saveSummonerInfo = (info, db) => {
@@ -31,10 +29,7 @@ const saveSummonerInfo = (info, db) => {
 
   return db.ref(`/summonerInfo/${region}/${summonerName.toUpperCase()}`).set(info)
     .then(() => console.log('saved'))
-    .catch((error) => {
-      console.log(error);
-      return error;
-    });
+    .catch((err) => log(err, 'saving summoner info'));
 }
 
 const getSummonerInfo = (db, params) => {
@@ -50,16 +45,10 @@ const getSummonerInfo = (db, params) => {
             return saveSummonerInfo(info, db)
               .then(() => info)
           })
-          .catch((error) => {
-            console.log(error);
-            return error;
-          });
+          .catch((err) => log(err, 'getting summoner info from Riot'));
       }
     })
-    .catch((error) => {
-      console.log(error);
-      return error;
-    });
+    .catch((err) => log(err, 'getting summoner info'));
 }
 
 const getRecentMatches = (region, accountId, dbRef) => {
@@ -67,10 +56,7 @@ const getRecentMatches = (region, accountId, dbRef) => {
 
   return axios.get(route)
     .then((response) => response)
-    .catch((error) => {
-      console.log(error);
-      return error;
-    });
+    .catch((err) => log(err, 'getting recent matches from Riot'));
 }
 
 const getMatchByGameId = (region, gameId, dbRef) => {
@@ -78,9 +64,7 @@ const getMatchByGameId = (region, gameId, dbRef) => {
   console.log('matchid', gameId)
   return axios.get(route)
     .then((response) => response)
-    .catch((error) => {
-      console.log(error);
-    });          
+    .catch((err) => log(err, 'getting match info from Riot'));      
 }
 
 
@@ -99,17 +83,11 @@ const getChampDataFromRiot = function(db) {
           if(riotHash != dbHash)
             db.ref('/champData').set(response.data)
               .then((response) => console.log('champ data saved.'))
-              .catch((error) => {
-                console.log(error);
-              });
+              .catch((err) => log(err, 'getting champ data from database'));
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((err) => log(err, 'getting champ data from Riot'));
     })
-    .catch((error) => {
-      console.log(error);
-    });
+    .catch((err) => log(err, 'getting champ hash from database'));
 }
 
 export {
