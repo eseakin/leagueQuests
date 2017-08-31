@@ -25,7 +25,7 @@ class QuestContainer extends Component {
 
   componentWillReceiveProps = (nextProps) => {
     if(nextProps.userQuests) {
-      console.log('questcontainer: replacing questlist')
+      console.log('updating questlist')
       const { questList } = this.state
       const newQuestList = questList.map((quest, i) => {
         return Object.assign({}, quest, nextProps.userQuests[i]);

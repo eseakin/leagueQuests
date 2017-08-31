@@ -125,13 +125,13 @@ class App extends Component {
 
     axios.post('/login', {email, password})
       .then((res) => {
-        console.log('success', res.data)
+        // console.log('success', res.data)
 
         if(res.data.info && res.data.info.loggedIn) {
           const { loggedIn, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests } = res.data.info;
           const { user } = res.data;
           const userId = user.uid;
-          console.log('successful login', userId)
+          console.log('successful login')
           this.setState({ loggedIn, user, userId, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests, failureMessage: '' });
         } else {
           this.setState({loginFailureMessage: res.data.message});
