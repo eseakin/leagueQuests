@@ -18,7 +18,7 @@ class App extends Component {
       windowHeight: window.innerHeight,
       resizeUpdate: false,
       activeView: 'quests',
-      backgroundUrl: 'http://cdn.leagueoflegends.com/lolkit/1.1.6/resources/images/bg-default.jpg',
+      backgroundUrl: 'https://cdn.leagueoflegends.com/lolkit/1.1.6/resources/images/bg-default.jpg',
       loggedIn: false,
       summonerName: '',
       profileIconId: '',
