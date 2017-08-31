@@ -7,11 +7,15 @@ const PopupQuestDetail = (props) => {
 
   const completion = handleCompletion(quest.id);
 
+  const iconSpacer = { x: 140, y: 160 };
+  const left = quest.style.left * iconSpacer.x;
+  const top = quest.style.top * iconSpacer.y;
+
   const style = {
     position: 'absolute',
     // top: quest.style.top + 400 + questLineIndex * 583 - window.scrollY < window.innerHeight * 3/4 ? quest.style.top : quest.style.top - 220,
-    top: quest.style.top -40,
-    left: quest.style.left + 390 < window.innerWidth ? quest.style.left + 90 : quest.style.left - 220,
+    top: top - 40,
+    left: left + 390 < window.innerWidth ? left + 90 : left - 220,
     height: 300,
     width: 200,
     display: showPopup ? 'block' : 'none',

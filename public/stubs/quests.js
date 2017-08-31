@@ -1,28 +1,6 @@
 const quests = [
   {
     id: 0,
-    name: 'Hellrazer',
-    description: 'Deal $ / $ / $ damage to objectives in a single game',
-    // category: ,
-    completion: 0,
-    startedTimestamp: null,
-    isComplete: false,
-    style: {
-      top: 360,
-      left: 460
-    },
-    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Shyvana_0.jpg',
-    requirements: [
-      {
-        type: 'more than',
-        displayValues: ['5k', '10k', '15k'],
-        values: [5000, 10000, 15000],
-        path: 'participants/$participantIndex/stats/damageDealtToObjectives'
-      }
-    ],
-  },
-  {
-    id: 1,
     name: 'Helping Hand',
     description: 'Get $ / $ / $ assists in a single game',
     // category: ,
@@ -30,8 +8,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 40,
-      left: 40
+      top: 0,
+      left: 0
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Blitzcrank_6.jpg',
     // completed: {
@@ -44,12 +22,34 @@ const quests = [
     requirements: [
       {
         type: 'more than',
-        displayValues: [15, 25, 35],
-        values: [15, 25, 35],
+        displayValues: [15, 20, 25],
+        values: [15, 20, 25],
         path: 'participants/$participantIndex/stats/assists'
       },
     ],
     // nextQuests: []
+  },
+  {
+    id: 1,
+    name: 'Hellrazer',
+    description: 'Deal $ / $ / $ damage to objectives in a single game',
+    // category: ,
+    completion: 0,
+    startedTimestamp: null,
+    isComplete: false,
+    style: {
+      top: 1,
+      left: 0
+    },
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Shyvana_0.jpg',
+    requirements: [
+      {
+        type: 'more than',
+        displayValues: ['10k', '15k', '20k'],
+        values: [10000, 15000, 20000],
+        path: 'participants/$participantIndex/stats/damageDealtToObjectives'
+      }
+    ],
   },
   {
     id: 2,
@@ -60,15 +60,15 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 40,
-      left: 180
+      top: 2,
+      left: 0
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Evelynn_0.jpg',
     requirements: [
       {
         type: 'more than',
-        displayValues: [15, 20, 25],
-        values: [15, 20, 25],
+        displayValues: [25, 35, 45],
+        values: [25, 35, 45],
         path: 'participants/$participantIndex/stats/wardsPlaced'
       }
     ],
@@ -82,15 +82,15 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 200,
-      left: 40
+      top: 0,
+      left: 1
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nocturne_2.jpg',
     requirements: [
       {
         type: 'more than',
-        displayValues: [10, 15, 25],
-        values: [10, 15, 25],
+        displayValues: [10, 15, 20],
+        values: [10, 15, 20],
         path: 'participants/$participantIndex/stats/wardsKilled'
       }
     ],
@@ -104,15 +104,15 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 360,
-      left: 40
+      top: 1,
+      left: 1
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kennen_4.jpg',
     requirements: [
       {
         type: 'more than',
-        displayValues: ['5k', '10k', '15k'],
-        values: [5000, 10000, 15000],
+        displayValues: ['10k', '15k', '20k'],
+        values: [10000, 15000, 20000],
         path: 'participants/$participantIndex/stats/totalHeal'
       }
     ],
@@ -126,15 +126,15 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 200,
-      left: 180
+      top: 2,
+      left: 1
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Morgana_3.jpg',
     requirements: [
       {
         type: 'more than',
-        displayValues: [100, 200, 300],
-        values: [100, 200, 300],
+        displayValues: [60, 90, 120],
+        values: [60, 90, 120],
         path: 'participants/$participantIndex/stats/timeCCingOthers'
       }
     ],
@@ -148,8 +148,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 360,
-      left: 180
+      top: 0,
+      left: 2
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/TwistedFate_6.jpg',
     requirements: [
@@ -170,15 +170,15 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 40,
-      left: 320
+      top: 1,
+      left: 2
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Caitlyn_6.jpg',
     requirements: [
       {
         type: 'more than',
-        displayValues: ['35k', '50k', '65k'],
-        values: [35000, 50000, 65000],
+        displayValues: ['25k', '30k', '35k'],
+        values: [25000, 30000, 35000],
         path: 'participants/$participantIndex/stats/physicalDamageDealtToChampions'
       }
     ],
@@ -192,8 +192,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 200,
-      left: 320
+      top: 2,
+      left: 2
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_2.jpg',
     requirements: [
@@ -214,8 +214,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 360,
-      left: 320
+      top: 0,
+      left: 3
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/JarvanIV_2.jpg',
     requirements: [
@@ -236,8 +236,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 40,
-      left: 460
+      top: 1,
+      left: 3
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/LeeSin_4.jpg',
     requirements: [
@@ -260,8 +260,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 200,
-      left: 460
+      top: 2,
+      left: 3
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/JarvanIV_1.jpg',
     requirements: [
@@ -282,8 +282,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 360,
-      left: 460
+      top: 0,
+      left: 0
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kayle_3.jpg',
     requirements: [
@@ -304,8 +304,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 40,
-      left: 40
+      top: 1,
+      left: 0
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg',
     // completed: {
@@ -318,8 +318,8 @@ const quests = [
     requirements: [
       {
         type: 'more than',
-        displayValues: ['35k', '50k', '65k'],
-        values: [35000, 50000, 65000],
+        displayValues: ['25k', '30k', '35k'],
+        values: [25000, 30000, 35000],
         path: 'participants/$participantIndex/stats/magicDamageDealtToChampions'
       }
     ],
@@ -334,8 +334,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 40,
-      left: 180
+      top: 2,
+      left: 0
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Darius_1.jpg',
     requirements: [
@@ -356,8 +356,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 200,
-      left: 40
+      top: 0,
+      left: 1
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Graves_1.jpg',
     requirements: [
@@ -378,8 +378,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 360,
-      left: 40
+      top: 1,
+      left: 1
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Draven_2.jpg',
     requirements: [
@@ -400,15 +400,15 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 200,
-      left: 180
+      top: 2,
+      left: 1
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Chogath_6.jpg',
     requirements: [
       {
         type: 'more than',
-        displayValues: [75, 125, 150],
-        values: [75, 125, 150],
+        displayValues: [75, 100, 125],
+        values: [75, 100, 125],
         path: 'participants/$participantIndex/stats/neutralMinionsKilled'
       }
     ],
@@ -422,15 +422,15 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 360,
-      left: 180
+      top: 0,
+      left: 2
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Anivia_7.jpg',
     requirements: [
       {
         type: 'division',
-        displayValues: [400, 500, 600],
-        values: [400, 500, 600],
+        displayValues: [300, 400, 500],
+        values: [300, 400, 500],
         paths: [
           'participants/$participantIndex/stats/goldEarned',
           'gameDuration'
@@ -447,8 +447,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 40,
-      left: 320
+      top: 1,
+      left: 2
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jhin_1.jpg',
     requirements: [
@@ -472,8 +472,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 200,
-      left: 320
+      top: 2,
+      left: 2
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/MasterYi_5.jpg',
     // completed: {
@@ -486,8 +486,8 @@ const quests = [
     requirements: [
       {
         type: 'more than',
-        displayValues: [8, 12, 16],
-        values: [8, 12, 16],
+        displayValues: [9, 12, 16],
+        values: [9, 12, 16],
         path: 'participants/$participantIndex/stats/kills'
       }
     ],
@@ -502,15 +502,15 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 360,
-      left: 320
+      top: 0,
+      left: 3
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gragas_4.jpg',
     requirements: [
       {
         type: 'subtraction',
-        displayValues: [1000, 3000, 5000],
-        values: [1000, 3000, 5000],
+        displayValues: [800, 1400, 2000],
+        values: [800, 1400, 2000],
         paths: [
           'participants/$participantIndex/stats/goldEarned',
           'participants/$participantIndex/stats/goldSpent'
@@ -527,8 +527,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 40,
-      left: 460
+      top: 1,
+      left: 3
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Graves_4.jpg',
     requirements: [
@@ -549,8 +549,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 200,
-      left: 460
+      top: 2,
+      left: 3
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jayce_2.jpg',
     requirements: [
@@ -571,15 +571,15 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 40,
-      left: 40
+      top: 0,
+      left: 0
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Soraka_5.jpg',
     requirements: [
       {
         type: 'more than',
-        displayValues: [20, 30, 40],
-        values: [20, 30, 40],
+        displayValues: [10, 15, 20],
+        values: [10, 15, 20],
         path: 'participants/$participantIndex/stats/totalUnitsHealed'
       }
     ],
@@ -593,8 +593,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 200,
-      left: 40
+      top: 1,
+      left: 0
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Akali_4.jpg',
     requirements: [
@@ -615,8 +615,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 360,
-      left: 40
+      top: 2,
+      left: 0
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Blitzcrank_5.jpg',
     requirements: [
@@ -637,8 +637,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 40,
-      left: 180
+      top: 0,
+      left: 1
     },
     backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Taric_2.jpg',
     requirements: [
@@ -659,8 +659,8 @@ const quests = [
     startedTimestamp: null,
     isComplete: false,
     style: {
-      top: 200,
-      left: 180
+      top: 1,
+      left: 1
     },
     backgroundImg: 'https://na.leagueoflegends.com/sites/default/files/styles/scale_large/public/upload/art/akali_vs_baron_3.jpg?itok=dTIf4Bj1',
     requirements: [

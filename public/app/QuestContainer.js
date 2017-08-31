@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container } from 'semantic-ui-react';
 import QuestCard from './QuestCard';
 import CurrentQuestCard from './CurrentQuestCard';
-// import { questList } from '../stubs/quests';
+import { log } from '../logHelpers';
 import axios from 'axios';
 
 class QuestContainer extends Component {
@@ -51,7 +51,7 @@ class QuestContainer extends Component {
         // console.log('quests', quests, questCards);
         this.setState({questList: quests, questCards: questCards});
       })
-      .catch((error) => console.log(error))
+      .catch((err) => log(err, 'getting quests')); 
   }
 
   beginQuest = () => {
@@ -65,14 +65,14 @@ class QuestContainer extends Component {
         console.log(response.data)
         this.setState({activeQuest: this.state.questList[questId]});
       })
-      .catch((error) => console.log(error))
+      .catch((err) => log(err, 'starting quest')); 
     } else {
       axios.get(`/beginPublicQuest/${region}/${summonerName}/${questId}`)
       .then((response) => {
         console.log(response.data)
         this.setState({activeQuest: this.state.questList[questId]});
       })
-      .catch((error) => console.log(error))
+      .catch((err) => log(err, 'starting quest')); 
     }
   }
 
@@ -83,7 +83,7 @@ class QuestContainer extends Component {
     if(user) {
       axios.get('/completePrivateQuest/' + userId)
       .then((res) => {
-        if(res.data.isComplete) {
+        if(res.data.isComplete && !res.data.error) {
           let questUpdate;
           const questListUpdate = this.state.questList.map((quest) => {
             if(quest.id == res.data.questId) {
@@ -101,7 +101,7 @@ class QuestContainer extends Component {
           console.log(res.data.message, res.data.userData[0])
         }
         })
-      .catch((err) => console.log(err));
+      .catch((err) => log(err, 'completing quest')); 
     } else {
       axios.get('/completePublicQuest/' + region + '/' + summonerName)
       .then((res) => {
@@ -123,7 +123,7 @@ class QuestContainer extends Component {
           console.log(res.data.message, res.data.userData[0])
         }
         })
-      .catch((err) => console.log(err));
+      .catch((err) => log(err, 'completing quest')); 
     }
   }
 

@@ -19,12 +19,16 @@ const QuestIcon = (props) => {
     color = 'gray'
     // outline = '0 2px 3px 0 rgba(0, 75, 150, 1), 0 0 0 2px rgba(0, 75, 150, 1)';
   }
+
+  const iconSpacer = { x: 140, y: 160 };
+  const left = quest.style.left * iconSpacer.x;
+  const top = quest.style.top * iconSpacer.y;
   
   const style = {
     container: {
       position: 'absolute',
-      top: quest.style.top + 50,
-      left: quest.style.left,
+      left: left + 40,
+      top: top + 90,
       height: 70,
       width: 70,
       cursor: 'pointer',

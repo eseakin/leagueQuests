@@ -7,6 +7,7 @@ import ModalMessage from './ModalMessage';
 import Login from './Login';
 import CreateAccount from './CreateAccount';
 import { regionDescriptions } from './Options';
+import { log } from '../logHelpers';
 
 
 class App extends Component {
@@ -39,7 +40,7 @@ class App extends Component {
     if(window.location.host != 'localhost:3000') {
       axios.get('/visitorCount')
       .then((res) => true)
-      .catch((error) => console.log(error));
+      // .catch((err) => log(err, 'visitorCount')); 
     }
   }
 
@@ -61,7 +62,7 @@ class App extends Component {
   }
 
   createNewAccount = (data) => {
-    this.setState({failureMessage: ''})
+    this.setState({failureMessage: ''});
     let { email, password, summonerName, region } = data;
     console.log('app create account', email, password)
 
@@ -80,28 +81,40 @@ class App extends Component {
     axios.post('/createNewAccount', payload)
       .then((res) => {
      
-          if(!res.data.message) {
-            console.log('success', res.data)
+        if(!res.data.error) {
+          console.log('success', res.data)
 
-            const { loggedIn, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests } = res.data.info;
-            const { user } = res.data;
-            const userId = user.uid;
+          const { loggedIn, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests } = res.data.info;
+          const { user } = res.data;
+          const userId = user.uid;
 
-            this.setState({ loggedIn, user, userId, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests, modalSuccess: 'Success' });
-            this.modalSuccess();
-          } else {
-            console.log('fail', res.data.message)
-            this.setState({failureMessage: res.data.message})
-          }
+          this.setState({ 
+            loggedIn, 
+            user, 
+            userId, 
+            accountId, 
+            summonerName, 
+            region, 
+            currentQuestId, 
+            profileIconId, 
+            questStart, 
+            userQuests, 
+            modalSuccess: 'Success', 
+            failureMessage: '' 
+          });
+          
+          this.modalSuccess();
+        } else {
+          console.log('fail', res.data.message)
+          this.setState({failureMessage: res.data.message})
+        }
       })
-      .catch((error) => console.log(error));
+      .catch((err) => log(err, 'creating new account')); 
   }
 
   loginSubmit = (data) => {
-    this.setState({loginFailureMessage: ''})
+    this.setState({loginFailureMessage: ''});
     let { email, password } = data;
-
-    // DEV ONLY
 
     console.log('app login', email)
 
@@ -109,8 +122,6 @@ class App extends Component {
       this.setState({loginFailureMessage: 'Please enter an email and password'});
       return;
     }
-
-    // this.getSummonerData('NA1', email);
 
     axios.post('/login', {email, password})
       .then((res) => {
@@ -121,12 +132,12 @@ class App extends Component {
           const { user } = res.data;
           const userId = user.uid;
           console.log('successful login', userId)
-          this.setState({ loggedIn, user, userId, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests });
+          this.setState({ loggedIn, user, userId, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests, failureMessage: '' });
         } else {
           this.setState({loginFailureMessage: res.data.message});
         }
       })
-      .catch((error) => console.log(error));
+      .catch((err) => log(err, 'log in')); 
   }
 
   logOutSubmit = () => {
@@ -142,7 +153,7 @@ class App extends Component {
             this.setState({loginFailureMessage: res.data.message});
           }
       })
-      .catch((error) => console.log(error));
+      .catch((err) => log(err, 'log out')); 
   }
 
   getSummonerInfo = (region, summonerName) => {
@@ -153,7 +164,7 @@ class App extends Component {
         const { accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests } = res.data
         this.setState({ accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests });
       })
-    .catch((err) => console.log(err));
+    .catch((err) => log(err, 'getting summoner info')); 
   }
 
   openModal = (type, data) => {
