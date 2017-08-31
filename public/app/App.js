@@ -216,9 +216,9 @@ class App extends Component {
     const version = '7.16.1'   
 
     // console.log('version', version)
-    const iconPath = 'http://ddragon.leagueoflegends.com/cdn/' + version + '/img/champion/';
-    const skinPath = 'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/';
-    const splashPath = 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/';
+    const iconPath = 'https://ddragon.leagueoflegends.com/cdn/' + version + '/img/champion/';
+    const skinPath = 'https://ddragon.leagueoflegends.com/cdn/img/champion/loading/';
+    const splashPath = 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/';
     // console.log(profileIconId)
 
     return (
@@ -231,7 +231,7 @@ class App extends Component {
           {loggedIn && 
             <div style={{width: 150, float: 'right', margin: 15}}>
               <div style={{textAlign: 'left'}}>
-                {profileIconId && <Image src={`http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/${profileIconId}.png`} floated='right' size='mini' />}
+                {profileIconId && <Image src={`https://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/${profileIconId}.png`} floated='right' size='mini' />}
                 {!profileIconId && <Icon size='big' name='question' style={{float: 'right', border: '1px solid green', borderRadius: 2, color: '#ddd', marginTop: 5}} />}
                 
                 <div style={{fontSize: 16}}>

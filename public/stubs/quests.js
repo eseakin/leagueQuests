@@ -11,7 +11,7 @@ const quests = [
       top: 360,
       left: 460
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Shyvana_0.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Shyvana_0.jpg',
     requirements: [
       {
         type: 'more than',
@@ -33,7 +33,7 @@ const quests = [
       top: 40,
       left: 40
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Blitzcrank_6.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Blitzcrank_6.jpg',
     // completed: {
     //   completedTimestamp: ,
     //   matchid: ,
@@ -63,7 +63,7 @@ const quests = [
       top: 40,
       left: 180
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Evelynn_0.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Evelynn_0.jpg',
     requirements: [
       {
         type: 'more than',
@@ -85,7 +85,7 @@ const quests = [
       top: 200,
       left: 40
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nocturne_2.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nocturne_2.jpg',
     requirements: [
       {
         type: 'more than',
@@ -107,7 +107,7 @@ const quests = [
       top: 360,
       left: 40
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kennen_4.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kennen_4.jpg',
     requirements: [
       {
         type: 'more than',
@@ -129,7 +129,7 @@ const quests = [
       top: 200,
       left: 180
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Morgana_3.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Morgana_3.jpg',
     requirements: [
       {
         type: 'more than',
@@ -151,7 +151,7 @@ const quests = [
       top: 360,
       left: 180
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/TwistedFate_6.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/TwistedFate_6.jpg',
     requirements: [
       {
         type: 'more than',
@@ -173,7 +173,7 @@ const quests = [
       top: 40,
       left: 320
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Caitlyn_6.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Caitlyn_6.jpg',
     requirements: [
       {
         type: 'more than',
@@ -195,7 +195,7 @@ const quests = [
       top: 200,
       left: 320
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_2.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jinx_2.jpg',
     requirements: [
       {
         type: 'more than',
@@ -217,7 +217,7 @@ const quests = [
       top: 360,
       left: 320
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/JarvanIV_2.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/JarvanIV_2.jpg',
     requirements: [
       {
         type: 'more than',
@@ -239,7 +239,7 @@ const quests = [
       top: 40,
       left: 460
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/LeeSin_4.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/LeeSin_4.jpg',
     requirements: [
       {
         type: 'multipath bool',
@@ -263,7 +263,7 @@ const quests = [
       top: 200,
       left: 460
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/JarvanIV_1.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/JarvanIV_1.jpg',
     requirements: [
       {
         type: 'more than',
@@ -285,7 +285,7 @@ const quests = [
       top: 360,
       left: 460
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kayle_3.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Kayle_3.jpg',
     requirements: [
       {
         type: 'multipath bool',
@@ -307,7 +307,7 @@ const quests = [
       top: 40,
       left: 40
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Ahri_0.jpg',
     // completed: {
     //   completedTimestamp: ,
     //   matchid: ,
@@ -337,7 +337,7 @@ const quests = [
       top: 40,
       left: 180
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Darius_1.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Darius_1.jpg',
     requirements: [
       {
         type: 'more than',
@@ -359,7 +359,7 @@ const quests = [
       top: 200,
       left: 40
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Graves_1.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Graves_1.jpg',
     requirements: [
       {
         type: 'more than',
@@ -381,7 +381,7 @@ const quests = [
       top: 360,
       left: 40
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Draven_2.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Draven_2.jpg',
     requirements: [
       {
         type: 'more than',
@@ -403,7 +403,7 @@ const quests = [
       top: 200,
       left: 180
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Chogath_6.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Chogath_6.jpg',
     requirements: [
       {
         type: 'more than',
@@ -425,7 +425,7 @@ const quests = [
       top: 360,
       left: 180
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Anivia_7.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Anivia_7.jpg',
     requirements: [
       {
         type: 'division',
@@ -450,7 +450,7 @@ const quests = [
       top: 40,
       left: 320
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jhin_1.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jhin_1.jpg',
     requirements: [
       {
         type: 'addition',
@@ -475,7 +475,7 @@ const quests = [
       top: 200,
       left: 320
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/MasterYi_5.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/MasterYi_5.jpg',
     // completed: {
     //   completedTimestamp: ,
     //   matchid: ,
@@ -505,7 +505,7 @@ const quests = [
       top: 360,
       left: 320
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gragas_4.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gragas_4.jpg',
     requirements: [
       {
         type: 'subtraction',
@@ -530,7 +530,7 @@ const quests = [
       top: 40,
       left: 460
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Graves_4.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Graves_4.jpg',
     requirements: [
       {
         type: 'multipath bool',
@@ -552,7 +552,7 @@ const quests = [
       top: 200,
       left: 460
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jayce_2.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Jayce_2.jpg',
     requirements: [
       {
         type: 'less than',
@@ -574,7 +574,7 @@ const quests = [
       top: 40,
       left: 40
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Soraka_5.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Soraka_5.jpg',
     requirements: [
       {
         type: 'more than',
@@ -596,7 +596,7 @@ const quests = [
       top: 200,
       left: 40
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Akali_4.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Akali_4.jpg',
     requirements: [
       {
         type: 'more than',
@@ -618,7 +618,7 @@ const quests = [
       top: 360,
       left: 40
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Blitzcrank_5.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Blitzcrank_5.jpg',
     requirements: [
       {
         type: 'more than',
@@ -640,7 +640,7 @@ const quests = [
       top: 40,
       left: 180
     },
-    backgroundImg: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Taric_2.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Taric_2.jpg',
     requirements: [
       {
         type: 'more than',
@@ -662,7 +662,7 @@ const quests = [
       top: 200,
       left: 180
     },
-    backgroundImg: 'http://na.leagueoflegends.com/sites/default/files/styles/scale_large/public/upload/art/akali_vs_baron_3.jpg?itok=dTIf4Bj1',
+    backgroundImg: 'https://na.leagueoflegends.com/sites/default/files/styles/scale_large/public/upload/art/akali_vs_baron_3.jpg?itok=dTIf4Bj1',
     requirements: [
       {
         type: 'more than',
@@ -676,21 +676,21 @@ const quests = [
 
 const tristanasQuests = {
   cardTitle: 'Tristana\'s Buckaneers',
-  cardBackground: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Tristana_6.jpg',
+  cardBackground: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Tristana_6.jpg',
   cardColor: '#1f1f3d',
   quests: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11]
 }
 
 const nocturnesQuests = {
   cardTitle: 'Nocturne\'s Nightwatch',
-  cardBackground: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nocturne_5.jpg',
+  cardBackground: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nocturne_5.jpg',
   cardColor: '#5b0e0e',
   quests: [13, 14, 15, 16, 17, 20, 23]
 }
 
 const singedsQuests = {
   cardTitle: 'Singed\'s Scientists',
-  cardBackground: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Singed_0.jpg',
+  cardBackground: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Singed_0.jpg',
   cardColor: '#193700',
   quests: [24, 25, 26, 27, 28]
 }

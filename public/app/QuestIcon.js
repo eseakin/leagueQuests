@@ -40,7 +40,7 @@ const QuestIcon = (props) => {
     }
   }
 
-  const iconPath = `http://ddragon.leagueoflegends.com/cdn/7.17.1/img/champion/${champ}.png`
+  const iconPath = `https://ddragon.leagueoflegends.com/cdn/7.17.1/img/champion/${champ}.png`
 
   return (
     <div style={style.container} onMouseEnter={() => onMouseEnter(quest.id)} onMouseLeave={onMouseLeave} onClick={() => handleClick(quest.id)}>

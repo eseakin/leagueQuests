@@ -150,7 +150,7 @@ class CurrentQuestCard extends Component {
           <div style={scrollY < 100 ? style.div : style.divScroll}>
             <Container style={style.container}>
               <Card centered style={style.card}>
-                <Image style={style.image} src={'http://na.leagueoflegends.com/sites/default/files/styles/scale_large/public/upload/art/wp_alistar_vs_olaf_1920x1080.jpg?itok=ReGhFMdq'} />
+                <Image style={style.image} src={'https://na.leagueoflegends.com/sites/default/files/styles/scale_large/public/upload/art/wp_alistar_vs_olaf_1920x1080.jpg?itok=ReGhFMdq'} />
                 <Card.Content style={style.content}>
                   
                   <Card.Header content={'Adventure Awaits!'} style={style.cardHeader} />
