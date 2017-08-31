@@ -52,39 +52,76 @@ class QuestContainer extends Component {
   }
 
   beginQuest = () => {
-    const { region, summonerName } = this.props;
+    const { region, summonerName, user, userId } = this.props;
     const questId = this.state.selectedQuest.id;
     console.log('begin', region, summonerName, questId)
-    axios.get(`/beginQuest/${region}/${summonerName}/${questId}`)
-    .then((response) => {
-      console.log(response.data)
-      this.setState({activeQuest: this.state.questList[questId]});
-    })
-    .catch((error) => console.log(error))
+
+    if(user) {
+      axios.get(`/beginPrivateQuest/${userId}/${questId}`)
+      .then((response) => {
+        console.log(response.data)
+        this.setState({activeQuest: this.state.questList[questId]});
+      })
+      .catch((error) => console.log(error))
+    } else {
+      axios.get(`/beginPublicQuest/${region}/${summonerName}/${questId}`)
+      .then((response) => {
+        console.log(response.data)
+        this.setState({activeQuest: this.state.questList[questId]});
+      })
+      .catch((error) => console.log(error))
+    }
   }
 
   //NEEDS TO UPDATE CURRENT QUEST AND POPUPQUEST RENDERING
   completeQuest = () => {
-    console.log('complete')
-    axios.get('/completeQuest/' + this.props.region + '/' + this.props.summonerName)
-    .then((res) => {
-      if(res.data.isComplete) {
-        let questUpdate;
-        const questListUpdate = this.state.questList.map((quest) => {
-          if(quest.id == res.data.questId) {
-            questUpdate = Object.assign({}, quest, {completion: res.data.completion, champ: res.data.champ, time: res.data.time});
-            return questUpdate;
-          } else {
-            return quest;
-          }
-        });
-        console.log(`completed: ${res.data.completion}/3 with ${res.data.userData[0]}`)
-        this.setState({questList: questListUpdate, selectedQuest: questUpdate, activeQuest: null })
-      } else {
-        console.log(res.data.message, res.data.userData[0])
-      }
-      })
-    .catch((err) => console.log(err));
+    const { region, summonerName, user, userId } = this.props;
+
+    if(user) {
+      axios.get('/completePrivateQuest/' + userId)
+      .then((res) => {
+        if(res.data.isComplete) {
+          let questUpdate;
+          const questListUpdate = this.state.questList.map((quest) => {
+            if(quest.id == res.data.questId) {
+              questUpdate = Object.assign({}, quest, {completion: res.data.completion, champ: res.data.champ, time: res.data.time});
+              return questUpdate;
+            } else {
+              return quest;
+            }
+          });
+          console.log(`completed: ${res.data.completion}/3 with ${res.data.userData[0]}`)
+          this.props.openModal('questCompleted', res.data.userData[0])
+          this.setState({questList: questListUpdate, selectedQuest: questUpdate, activeQuest: null })
+        } else {
+          this.props.openModal('questFailed', res.data.userData[0])
+          console.log(res.data.message, res.data.userData[0])
+        }
+        })
+      .catch((err) => console.log(err));
+    } else {
+      axios.get('/completePublicQuest/' + region + '/' + summonerName)
+      .then((res) => {
+        if(res.data.isComplete) {
+          let questUpdate;
+          const questListUpdate = this.state.questList.map((quest) => {
+            if(quest.id == res.data.questId) {
+              questUpdate = Object.assign({}, quest, {completion: res.data.completion, champ: res.data.champ, time: res.data.time});
+              return questUpdate;
+            } else {
+              return quest;
+            }
+          });
+          console.log(`completed: ${res.data.completion}/3 with ${res.data.userData[0]}`)
+          this.props.openModal('questCompleted', res.data.userData[0])
+          this.setState({questList: questListUpdate, selectedQuest: questUpdate, activeQuest: null })
+        } else {
+          this.props.openModal('questFailed', res.data.userData[0])
+          console.log(res.data.message, res.data.userData[0])
+        }
+        })
+      .catch((err) => console.log(err));
+    }
   }
 
   handleDescription = (quest, completion) => {

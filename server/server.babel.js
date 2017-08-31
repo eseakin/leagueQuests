@@ -63,14 +63,14 @@ db.ref('/quests/quests').once('value')
     console.log('quest list retrieved')
     questList = snap.val()
   })
-  .catch((error) => console.log(error)); 
+  .catch((err) => console.log(err)); 
 
 db.ref('/champData').once('value')
   .then((snap) => {
     console.log('champ data retrieved')
     champData = snap.val().data
   })
-  .catch((error) => console.log(error)); 
+  .catch((err) => console.log(err)); 
 
 
 // client creates account
@@ -88,7 +88,7 @@ app.post('/login', (req, res) => {
   console.log('login received', req.body)
   logIn(auth, db, req.body)
     .then((response) => res.send(response))
-    .catch((err) => logAndSend(res, err, 'create account failed'))
+    .catch((err) => logAndSend(res, err, 'login failed'))
 })
 
 
@@ -117,7 +117,7 @@ app.post('/logOut', (req, res) => {
 app.get('/summonerInfo/:region/:summonerName', (req, res) => {
   getSummonerInfo(db, req.params)
     .then((info) => res.send(info))
-    .catch((error) => console.log(error)); 
+    .catch((err) => console.log(err)); 
 });
 
 
@@ -127,7 +127,7 @@ app.get('/quests', (req, res) => {
 
   db.ref('/quests').once('value')
     .then((snap) => res.send(snap.val()))
-    .catch((error) => console.log(error));
+    .catch((err) => console.log(err));
 });
 
 // Client pulls champion data
@@ -139,21 +139,21 @@ app.get('/champData', (req, res) => {
 });
 
 // Client begins quest
-app.get('/beginQuest/:region/:summonerName/:currentQuestId', (req, res) => {
+app.get('/beginPublicQuest/:region/:summonerName/:currentQuestId', (req, res) => {
   const { region, summonerName, currentQuestId } = req.params;
 
   db.ref(`summonerInfo/${region}/${summonerName.toUpperCase()}`).once('value')
   .then((snap) => {
 
     if(snap.val()) {
-      const user = {
+      const questInfo = {
         questStart: new Date(),
         currentQuestId
       };
 
-      db.ref(`/summonerInfo/${region}/${summonerName.toUpperCase()}`).update(user)
-        .then(() => res.send(`${summonerName} started quest ${currentQuestId} at ${user.questStart}`))
-        .catch((error) => console.log(error));
+      db.ref(`/summonerInfo/${region}/${summonerName.toUpperCase()}`).update(questInfo)
+        .then(() => res.send(`${summonerName} started quest ${currentQuestId} at ${questInfo.questStart}`))
+        .catch((err) => console.log(err));
 
     } else {
       getSummonerInfoFromRiot(region, summonerName)
@@ -171,12 +171,35 @@ app.get('/beginQuest/:region/:summonerName/:currentQuestId', (req, res) => {
 
           saveSummonerInfo(info, db)
             .then((response) => {
-              res.send(`${summonerName} started quest ${currentQuestId} at ${user.questStart}`);
+              res.send(`${summonerName} started quest ${currentQuestId} at ${info.questStart}`);
             })
-            .catch((error) => console.log(error)); 
+            .catch((err) => console.log(err)); 
         })
-        .catch((error) => console.log(error)); 
+        .catch((err) => console.log(err)); 
     }
+  });
+
+  // beginQuest(req.params, res, db);
+});
+
+app.get('/beginPrivateQuest/:userId/:currentQuestId', (req, res) => {
+  const { userId, currentQuestId } = req.params;
+
+  db.ref(`registeredUsers/${userId}`).once('value')
+  .then((snap) => {
+    const user = snap.val();
+
+    if(!user)
+      res.send({message: 'user does not exist'});
+
+    const questInfo = {
+      questStart: new Date(),
+      currentQuestId
+    };
+
+    db.ref(`registeredUsers/${userId}`).update(questInfo)
+      .then(() => res.send(`${user.summonerName} started quest ${currentQuestId} at ${questInfo.questStart}`))
+      .catch((err) => logAndSend(res, err, 'start quest failed'))
   });
 
   // beginQuest(req.params, res, db);
@@ -184,10 +207,22 @@ app.get('/beginQuest/:region/:summonerName/:currentQuestId', (req, res) => {
 
 
 //client completes quest
-app.get('/completeQuest/:region/:summonerName', (req, res) => {
-  completeQuest(req.params, db, questList)
+app.get('/completePublicQuest/:region/:summonerName', (req, res) => {
+  const { region, summonerName } = req.params;
+  const dbRef = db.ref(`/summonerInfo/${region}/${summonerName.toUpperCase()}`);
+
+  completeQuest(req.params, db, questList, dbRef)
     .then((result) => res.send(result))
-    .catch((error) => console.log(error)); 
+    .catch((err) => console.log(err)); 
+});
+
+app.get('/completePrivateQuest/:userId', (req, res) => {
+  const { userId } = req.params;
+  const dbRef = db.ref(`/registeredUsers/${userId}`);
+
+  completeQuest(req.params, db, questList, dbRef)
+    .then((result) => res.send(result))
+    .catch((err) => console.log(err)); 
 });
 
 

@@ -678,14 +678,14 @@ const tristanasQuests = {
   cardTitle: 'Tristana\'s Buckaneers',
   cardBackground: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Tristana_6.jpg',
   cardColor: '#1f1f3d',
-  quests: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+  quests: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11]
 }
 
 const nocturnesQuests = {
   cardTitle: 'Nocturne\'s Nightwatch',
   cardBackground: 'http://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nocturne_5.jpg',
   cardColor: '#5b0e0e',
-  quests: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+  quests: [13, 14, 15, 16, 17, 20, 23]
 }
 
 const singedsQuests = {

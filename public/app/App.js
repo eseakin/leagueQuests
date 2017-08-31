@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import './App.css';
-import axios from 'axios';
-import QuestContainer from './QuestContainer';
 import { Image, Icon, Modal, Button, Message, Card } from 'semantic-ui-react'
+import axios from 'axios';
+import './App.css';
+import QuestContainer from './QuestContainer';
+import ModalMessage from './ModalMessage';
 import Login from './Login';
 import CreateAccount from './CreateAccount';
 import { regionDescriptions } from './Options';
@@ -115,7 +116,7 @@ class App extends Component {
       .then((res) => {
         console.log('success', res.data)
 
-        if(res.data.info.loggedIn) {
+        if(res.data.info && res.data.info.loggedIn) {
           const { loggedIn, accountId, summonerName, region, currentQuestId, profileIconId, questStart, userQuests } = res.data.info;
           const { user } = res.data;
           const userId = user.uid;
@@ -156,14 +157,24 @@ class App extends Component {
   }
 
   openModal = (type, data) => {
+    let modalContents;
+
     switch(type) {
 
       case undefined:
         return null;
 
       case 'createNewAccount':
-        const {email, password} = data;
-        let modalContents = <CreateAccount closeModal={this.closeModal} onSubmit={this.createNewAccount} email={email} password={password}/>
+        const { email, password } = data;
+        modalContents = <CreateAccount closeModal={this.closeModal} onSubmit={this.createNewAccount} email={email} password={password}/>
+        this.setState({ modalContents, showModal: true, failureMessage: '' });
+        return
+      case 'questFailed':
+        modalContents = <ModalMessage closeModal={this.closeModal} message={`Quest Failed with ${data}`} />
+        this.setState({ modalContents, showModal: true, failureMessage: '' });
+        return
+      case 'questCompleted':
+        modalContents = <ModalMessage closeModal={this.closeModal} message={`Quest Completed with ${data}`} />
         this.setState({ modalContents, showModal: true, failureMessage: '' });
         return
     }
@@ -197,7 +208,9 @@ class App extends Component {
       failureMessage,
       showModal,
       modalContents,
-      modalSuccess
+      modalSuccess,
+      user,
+      userId
        } = this.state;
 
     const version = '7.16.1'   
@@ -261,6 +274,7 @@ class App extends Component {
         </Modal>
 
         <QuestContainer 
+          openModal={this.openModal}
           summonerName={summonerName} 
           accountId={accountId} 
           region={region} 
@@ -268,6 +282,8 @@ class App extends Component {
           profileIconId={profileIconId}
           questStart={questStart}
           userQuests={userQuests}
+          userId={userId}
+          user={user}
         />
 
         <div className='footer' style={{color:'white'}}>

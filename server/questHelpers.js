@@ -23,15 +23,15 @@ const beginQuest = (params, db) => {
   .catch((error) => console.log(error));
 }
 
-const completeQuest = (params, db, questList) => {
-  const { region, summonerName } = params;
+const completeQuest = (params, db, questList, dbRef) => {
 
-  return db.ref(`/users/${region}/${summonerName.toUpperCase()}`).once('value')
+  return dbRef.once('value')
     .then((snap) => {
       const user = snap.val();
-      // console.log('retrieved user from db', user)
+      const { region, summonerName, accountId } = user;
+      console.log('retrieved user from db', user)
       
-      return getRecentMatches(region, user.accountId)
+      return getRecentMatches(region, accountId)
         .then((response) => {
           // console.log('recent matches retrieved', response.data.matches[0])
           return getMatchByGameId(region, response.data.matches[0].gameId)
