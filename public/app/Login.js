@@ -26,7 +26,7 @@ class Login extends Component {
   }
 
   render() {
-    const { loggedIn, failureMessage, openModal } = this.props;
+    const { loggedIn, failureMessage, openModal, clearLoginError } = this.props;
     const { email, password } = this.state;
 
     return(
@@ -69,7 +69,7 @@ class Login extends Component {
           onClick={this.handleCreateNewAccount}
         />
 
-        <Message error compact content={failureMessage}/>
+        <Message error compact content={failureMessage} onClick={clearLoginError}/>
 
       </Form>
     )

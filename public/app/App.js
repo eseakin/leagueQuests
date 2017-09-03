@@ -10,6 +10,9 @@ import { regionDescriptions } from './Options';
 import { log } from '../logHelpers';
 
 
+// figure out why completing a quest doesn't reset active quest
+
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +30,7 @@ class App extends Component {
       showModal: false,
       modalContents: '',
       failureMessage: '',
+      showProfileIcon: false,
     };
   }
 
@@ -80,6 +84,7 @@ class App extends Component {
 
     axios.post('/createNewAccount', payload)
       .then((res) => {
+        console.log('response', res.data)
      
         if(!res.data.error) {
           console.log('success', res.data)
@@ -100,16 +105,18 @@ class App extends Component {
             questStart, 
             userQuests, 
             modalSuccess: 'Success', 
-            failureMessage: '' 
+            failureMessage: '',
+            loginFailureMessage: '',
           });
           
           this.modalSuccess();
         } else {
           console.log('fail', res.data.message)
-          this.setState({failureMessage: res.data.message})
+          this.setState({failureMessage: res.data.message, loginFailureMessage: ''})
         }
       })
-      .catch((err) => log(err, 'creating new account')); 
+      // .catch((err) => log(err, 'creating new account')); 
+      .catch((err) => console.log(err))
   }
 
   loginSubmit = (data) => {
@@ -156,6 +163,10 @@ class App extends Component {
       .catch((err) => log(err, 'log out')); 
   }
 
+  clearLoginError = () => {
+    this.setState({loginFailureMessage: ''});
+  }
+
   getSummonerInfo = (region, summonerName) => {
     // summonerName = 'escape goat'
     axios.get(`summonerInfo/${region}/${summonerName}`)
@@ -199,6 +210,11 @@ class App extends Component {
     setTimeout(() => this.setState({modalSuccess: '', showModal: false}), 1500);
   }
 
+  handleProfileIconLoad = () => {
+    console.log('handleProfileIconLoad')
+    this.setState({profileIconId: null});
+  }
+
   render = () => {
     // console.log('render')
     const { 
@@ -221,7 +237,8 @@ class App extends Component {
       modalContents,
       modalSuccess,
       user,
-      userId
+      userId,
+      showProfileIcon
        } = this.state;
 
     const version = '7.16.1'   
@@ -237,13 +254,13 @@ class App extends Component {
         <div className="App-header">
           <img src="../leagueQuests.png" alt="Welcome to League Skins"/>
 
-          {!loggedIn && <Login loginSubmit={this.loginSubmit} failureMessage={loginFailureMessage} openModal={this.openModal} />}
+          {!loggedIn && <Login loginSubmit={this.loginSubmit} failureMessage={loginFailureMessage} openModal={this.openModal} clearLoginError={this.clearLoginError}/>}
 
           {loggedIn && 
-            <div style={{width: 150, float: 'right', margin: 15}}>
+            <div style={{width: 200, position: 'absolute', top: 15, right: 15}}>
               <div style={{textAlign: 'left'}}>
-                {profileIconId && <Image src={`https://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/${profileIconId}.png`} floated='right' size='mini' />}
-                {!profileIconId && <Icon size='big' name='question' style={{float: 'right', border: '1px solid green', borderRadius: 2, color: '#ddd', marginTop: 5}} />}
+                {profileIconId && <Image src={`https://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/${profileIconId}.png`} onError={this.handleProfileIconLoad} floated='right' size='mini' /> }
+                {!profileIconId && <Icon size='big' name='question' style={{float: 'right', border: '1px solid green', borderRadius: 2, color: '#ddd', padding: '2px 0', height: 36, width: 40}} />}
                 
                 <div style={{fontSize: 16}}>
                   {summonerName}
@@ -259,7 +276,6 @@ class App extends Component {
               </div>
             </div>
           }
-
           
         </div>
 

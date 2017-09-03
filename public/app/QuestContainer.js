@@ -98,7 +98,7 @@ class QuestContainer extends Component {
           this.setState({questList: questListUpdate, selectedQuest: questUpdate, activeQuest: null })
         } else {
           this.props.openModal('questFailed', res.data.userData[0])
-          console.log(res.data.message, res.data.userData[0])
+          this.setState({activeQuest: null})
         }
         })
       .catch((err) => log(err, 'completing quest')); 
@@ -120,7 +120,7 @@ class QuestContainer extends Component {
           this.setState({questList: questListUpdate, selectedQuest: questUpdate, activeQuest: null })
         } else {
           this.props.openModal('questFailed', res.data.userData[0])
-          console.log(res.data.message, res.data.userData[0])
+          this.setState({activeQuest: null})
         }
         })
       .catch((err) => log(err, 'completing quest')); 
