@@ -93,7 +93,7 @@ app.post('/login', (req, res) => {
 // client logs out
 app.post('/logOut', (req, res) => {
   console.log('logout received')
-  fb.auth().signOut()
+  auth.signOut()
     .then((response) => {
         console.log('logged out');
 

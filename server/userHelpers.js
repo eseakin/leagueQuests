@@ -4,33 +4,34 @@ const { log, logAndSend } = require('./logHelpers');
 
 const createNewAccount = (data, auth, db) => {
   const { email, password, region, summonerName } = data;
-  console.log('create account', email, password, region, summonerName)
+  console.log('create account', email, region, summonerName)
 
-  return auth.createUserWithEmailAndPassword(email, password)
-    .then(user => {
-      console.log('account created', email, user.uid)
+  //check if summoner is already in DB, pull from riot and save it if it isn't
+  return getSummonerInfo(db, data)
+    .then((info) => {
 
-      //check if summoner is already in DB, pull from riot and save it if it isn't
-      return getSummonerInfo(db, data)
-        .then((info) => {
-          const { region } = info;
+      console.log('getSummonerInfo response', data)
+
+      if(!info)
+        return {message: 'Summoner Not Found'};
+
+      return auth.createUserWithEmailAndPassword(email, password)
+        .then(user => {
+          console.log('account created', email, user.uid)
 
           const data = Object.assign({}, info);
           data.id = user.uid;
           data.loggedIn = true;
-
-          console.log('getSummonerInfo response', data)
+          data.email = email;
+          data.completionPoints = 0;
+          const payload = { user, info: data };
 
           return db.ref(`/registeredUsers/${data.id}`).set(data)
-            .then(() => {
-              return { user, info: data }
-            })
+            .then(() => payload)
             .catch((err) => log(err, 'setting account info in database'));
-        })
-        .catch((err) => log(err, 'getting summoner info'));
-
-      }, (err) => log(err, 'creating account'));
-
+        }, (err) => log(err, 'creating account'));
+    })
+    .catch((err) => log(err, 'getting summoner info'));
 }
 
 const logIn = (auth, db, params) => {

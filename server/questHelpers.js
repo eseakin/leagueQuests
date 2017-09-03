@@ -30,7 +30,7 @@ const completeQuest = (params, db, questList, dbRef) => {
     .then((snap) => {
       const user = snap.val();
       const { region, summonerName, accountId } = user;
-      console.log('retrieved user from db', user)
+      console.log('checking quest completion on user ', user.id)
       
       return getRecentMatches(region, accountId)
         .then((response) => {
@@ -115,23 +115,26 @@ const checkPriorQuestCompletion = (result, db, dbRef) => {
       result.time = new Date().getTime();
       console.log('compare', priorResults, completion)
 
+      const update = {};
+
       if(completion > priorResults) {
-        result.message = 'Quest Success!'
         result.isComplete = true;
-        const update = {};
         update[`userQuests/${result.questId}/completion`] = completion;
         update[`userQuests/${result.questId}/champ`] = result.champ;
         update[`userQuests/${result.questId}/time`] = result.time;
         update[`userQuests/${result.questId}/best`] = result.userData;
 
-        return dbRef.update(update)
-          .then(() => result)
-          .catch((err) => log(err, 'updating quest completion'));
       } else {
         result.isComplete = false;
-        result.message = 'Quest failed'
-        return new Promise((resolve, reject) => resolve(result));
+        update.currentQuestId = null;
+        update.questStart = null;
       }
+
+      return dbRef.update(update)
+        .then(() => result)
+        .catch((err) => log(err, 'updating quest completion'));
+
+
     })
     .catch((err) => log(err, 'getting champ data from database'));
 }
