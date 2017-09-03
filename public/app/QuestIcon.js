@@ -12,7 +12,7 @@ const QuestIcon = (props) => {
     outline = '0px 0px 25px 5px rgba(0,247,255,1), 0 2px 3px 0 white, 0 0 0 2px white';
     animation = 'pulse infinite 4s ease-in-out'
   } 
-  else if((selectedQuest && selectedQuest.id === quest.id)) {
+  else if(selectedQuest && selectedQuest.id === quest.id) {
     color = '#ddd'
     outline = '0px 0px 25px 5px rgba(0,247,255,1)';
   } else {

@@ -15,14 +15,15 @@ const PopupQuestDetail = (props) => {
     position: 'absolute',
     // top: quest.style.top + 400 + questLineIndex * 583 - window.scrollY < window.innerHeight * 3/4 ? quest.style.top : quest.style.top - 220,
     top: top - 40,
-    left: left + 390 < window.innerWidth ? left + 90 : left - 220,
+    // left: left + 390 < window.innerWidth ? left + 90 : left - 220,
+    left: left + 120,
     height: 300,
     width: 200,
     display: showPopup ? 'block' : 'none',
     zIndex: 5,
     textAlign: 'left'
   }
-
+  
   return (
     <div style={style} className='quest' >
       <Card style={{boxShadow: '0 1px 3px 0 #222, 0 0 0 1px #222', background: 'linear-gradient(135deg, rgba(59,81,102,1) 0%, rgba(43,53,67,1) 100%)', color: 'white'}}>

@@ -574,7 +574,7 @@ const quests = [
       top: 0,
       left: 0
     },
-    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Soraka_5.jpg',
+    backgroundImg: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Rakan_0.jpg',
     requirements: [
       {
         type: 'more than',
@@ -678,7 +678,7 @@ const tristanasQuests = {
   cardTitle: 'Tristana\'s Buckaneers',
   cardBackground: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Tristana_6.jpg',
   cardColor: '#1f1f3d',
-  quests: [0, 1, 3, 4, 5, 6, 7, 8, 9, 11]
+  quests: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11]
 }
 
 const nocturnesQuests = {
@@ -689,8 +689,8 @@ const nocturnesQuests = {
 }
 
 const singedsQuests = {
-  cardTitle: 'Singed\'s Scientists',
-  cardBackground: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Singed_0.jpg',
+  cardTitle: 'Nami\'s Tidecallers',
+  cardBackground: 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Nami_0.jpg',
   cardColor: '#193700',
   quests: [24, 25, 26, 27, 28]
 }
